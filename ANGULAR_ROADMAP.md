@@ -1,765 +1,743 @@
-# Angular + ASP.NET Roadmap: от основ до продвинутого уровня
+# Angular Roadmap: From Fundamentals to Advanced
 
-> Основной трек: **Angular 21**. Параллельный трек по C#/ASP.NET — в [DOTNET_ROADMAP.md](./DOTNET_ROADMAP.md).
-> Опыт на входе: React / Next.js / NestJS / TypeScript.
-> Проект-песочница: `to-do-list/` · Финальный пет-проект: `devlog/` (см. Часть 15)
-> Обзор обоих треков и порядок прохождения — в [README.md](./README.md).
+> Main track: **Angular 21**. The parallel C#/ASP.NET track lives in [DOTNET_ROADMAP.md](./DOTNET_ROADMAP.md).
+> Background coming in: React / Next.js / NestJS / TypeScript.
+> Sandbox project: `to-do-list/` · Final pet project: `devlog/` (see Part 15)
+> Overview of both tracks and the recommended order — see [README.md](./README.md).
 
-## Как пользоваться
+## How to Use This
 
-**Статусы пунктов:**
+**Item statuses:**
 
-| Метка | Значение |
+| Mark | Meaning |
 |---|---|
-| `- [ ]` | не пройдено |
-| `- [~]` | в процессе |
-| `- [x]` | пройдено с Claude — разобрано и подтверждено |
-| `- [c]` | **пройдено с Copilot — ждёт ревью от Claude** |
-| `- [x]` 🔄 | пройдено с Copilot и **проверено** Claude (ревью прошло) |
+| `- [ ]` | not started |
+| `- [~]` | in progress |
+| `- [x]` | done with Claude — explained and confirmed |
+| `- [c]` | **done with Copilot — awaiting Claude's review** |
+| `- [x]` 🔄 | done with Copilot and **reviewed** by Claude |
 
-Пункт со статусом `[c]` считается закрытым только после ревью — см. Приложение Б, раздел «Режим двух ассистентов».
+An item marked `[c]` counts as closed only after review — see Appendix B, "Two-Assistant Mode".
 
-- Каждый пункт = маленькая практическая задача, а не «прочитать статью».
-- Пункты со значком 🔑 — концепции, без которых дальше идти бессмысленно.
-- Пункты со значком ⚛️ — там, где Angular принципиально отличается от React (главные точки переучивания).
-- Пункты со значком 🔷 — там, где C# принципиально отличается от TypeScript.
-- Пункты со значком 🏗 — best practice / архитектурное правило, а не фича фреймворка.
+- Every item is a small practical task, not "read an article".
+- 🔑 — concepts you cannot skip without breaking what comes next.
+- ⚛️ — where Angular differs fundamentally from React (the main re-learning points).
+- 🏗 — a best practice or architectural rule, not a framework feature.
 
-**Два трека.** Части 0–14 здесь — Angular. C#/ASP.NET — в [DOTNET_ROADMAP.md](./DOTNET_ROADMAP.md). Часть 15 (пет-проект DevLog) — место, где они сходятся: каждый этап проекта закрывает пункты из обоих треков сразу.
+**Two tracks.** Parts 0–15 here are Angular. C#/ASP.NET lives in [DOTNET_ROADMAP.md](./DOTNET_ROADMAP.md). Part 15 (the DevLog pet project) is where they meet: every project stage closes items from both tracks.
 
-**Порядок прохождения:** ступенчатый, не параллельный с первого дня — см. [README.md](./README.md#порядок-двух-треков).
+**Order:** staggered, not parallel from day one — see [README.md](./README.md#track-order).
 
-**Важно про текущий сетап:** приложение создано в *zoneless*-режиме (нет `zone.js`), билдер — `@angular/build` (Vite под капотом), тесты — Vitest, SSR включён. Это значит: реактивность держится **на сигналах**, а не на «магии» Zone.js — что сильно ближе к React-модели, чем классический Angular из туториалов 2020 года. Старые статьи с `NgModule`, `*ngIf`, `ChangeDetectionStrategy.OnPush` как обязательным приёмом — читай с поправкой на это.
+**Important about the current setup:** the app was created in *zoneless* mode (no `zone.js`), the builder is `@angular/build` (Vite under the hood), tests run on Vitest, SSR is enabled. That means reactivity rests **on signals**, not on Zone.js magic — much closer to the React model than the classic Angular you'll find in 2020-era tutorials. Read old articles about `NgModule`, `*ngIf`, and `ChangeDetectionStrategy.OnPush`-as-a-requirement with that in mind.
 
 ---
 
-## Часть 0. Уже пройдено ✅
+## Part 0. Already Covered ✅
 
-Фундамент, который мы прошли в `to-do-list/`.
+The foundation we went through in `to-do-list/`.
 
-- [x] Инициализация приложения через Angular CLI (`ng new`)
-- [x] 🔑 Сигналы: `signal()`, чтение как вызов функции, `.set()`, `.update()`
-- [x] Иммутабельные обновления сигналов (`map`/`filter`/spread вместо мутации)
-- [x] `@Component`: `selector`, `imports`, `templateUrl`, `styleUrl` ⚛️ *(метаданных у React-компонента просто нет)*
-- [x] Standalone-компоненты и явный массив `imports` ⚛️ *(в React импорта в файл достаточно; тут компонент/директиву надо ещё и «зарегистрировать» в `imports`)*
-- [x] Интерполяция `{{ }}`
-- [x] Property binding `[prop]="value"` и event binding `(event)="handler()"`
-- [x] Control flow в шаблоне: `@for (... ; track ...)` ⚛️ *(`track` обязателен — аналог `key`)*
-- [x] `input.required<T>()` — входные данные (props)
-- [x] `output<T>()` + `.emit(value)` — исходящие события (callbacks), `$event` в шаблоне
-- [x] Разделение smart / dumb компонентов (`TaskList` владеет данными, `TaskItem` только рисует) 🏗
+- [x] Bootstrapping an app with the Angular CLI (`ng new`)
+- [x] 🔑 Signals: `signal()`, reading by calling it, `.set()`, `.update()`
+- [x] Immutable signal updates (`map`/`filter`/spread instead of mutation)
+- [x] `@Component`: `selector`, `imports`, `templateUrl`, `styleUrl` ⚛️ *(a React component simply has no metadata like this)*
+- [x] Standalone components and the explicit `imports` array ⚛️ *(in React importing into the file is enough; here a component/directive must also be "registered" in `imports`)*
+- [x] Interpolation `{{ }}`
+- [x] Property binding `[prop]="value"` and event binding `(event)="handler()"`
+- [x] Template control flow: `@for (... ; track ...)` ⚛️ *(`track` is mandatory — the equivalent of `key`)*
+- [x] `input.required<T>()` — inputs (props)
+- [x] `output<T>()` + `.emit(value)` — outputs (callbacks), `$event` in the template
+- [x] Smart / dumb component split (`TaskList` owns the data, `TaskItem` only renders) 🏗
 - [x] Reactive Forms: `FormBuilder`, `form.group()`, `Validators.required`, `[formGroup]`, `formControlName`, `(ngSubmit)`
-- [x] Роутинг: `Routes`, `provideRouter`, `<router-outlet />`, `routerLink`
-- [x] Организация `pages/` (роутовые компоненты) vs `features/` (переиспользуемые фичи) 🏗
+- [x] Routing: `Routes`, `provideRouter`, `<router-outlet />`, `routerLink`
+- [x] Organizing `pages/` (route components) vs `features/` (reusable features) 🏗
 - [x] 🔑 Dependency Injection: `@Injectable({ providedIn: 'root' })`, `inject()`
-- [x] Вынос состояния в сервис-синглтон как shared state ⚛️ *(аналог Zustand/Context, но встроен во фреймворк)*
+- [x] Moving state into a singleton service as shared state ⚛️ *(like Zustand/Context, but built into the framework)*
 - [x] `provideHttpClient()`, `HttpClient` (`get`/`post`/`patch`/`delete`)
-- [x] `httpResource()` — signal-based загрузка данных, `.value()`, `.reload()`
-- [x] Первое знакомство с Observable и `.subscribe()`
-- [x] Локальный фейковый REST API на `json-server`
+- [x] `httpResource()` — signal-based data loading, `.value()`, `.reload()`
+- [x] First contact with Observables and `.subscribe()`
+- [x] A local fake REST API with `json-server`
 
 ---
 
-## Часть 1. Основы: закрыть пробелы
+## Part 1. Fundamentals: Filling the Gaps
 
-Всё, что рядом с уже пройденным, но мы пропустили.
+Everything adjacent to what we covered but skipped.
 
-### 1.1 Шаблоны
+### 1.1 Templates
 
-- [ ] `@if` / `@else if` / `@else` — условный рендер
+- [ ] `@if` / `@else if` / `@else` — conditional rendering
 - [ ] `@switch` / `@case` / `@default`
-- [ ] `@empty` внутри `@for` — состояние пустого списка
-- [ ] Переменные `@for`: `$index`, `$first`, `$last`, `$even`, `$odd`, `$count`
-- [ ] `@let` — локальная переменная в шаблоне (чтобы не звать `store.foo().bar` пять раз)
-- [ ] Template reference variables: `<input #nameInput>` и обращение `nameInput.value` ⚛️ *(грубый аналог `ref`, но работает прямо в шаблоне)*
-- [ ] Два вида биндинга атрибутов: `[class.active]="isActive()"`, `[style.width.px]="w()"`, `[attr.aria-label]="..."`
-- [ ] Разница `[attr.disabled]` vs `[disabled]` (атрибут HTML vs свойство DOM) ⚛️
-- [ ] 🏗 Правило: **никакой тяжёлой логики в шаблоне** — `{{ tasks().filter(...).length }}` заменить на `computed()` (см. 2.1). В нашем `about.html` сейчас как раз анти-паттерн — исправить.
+- [ ] `@empty` inside `@for` — the empty-list state
+- [ ] `@for` variables: `$index`, `$first`, `$last`, `$even`, `$odd`, `$count`
+- [ ] `@let` — a local template variable (so you don't call `store.foo().bar` five times)
+- [ ] Template reference variables: `<input #nameInput>` and reading `nameInput.value` ⚛️ *(a rough analogue of `ref`, but works right in the template)*
+- [ ] Attribute binding forms: `[class.active]="isActive()"`, `[style.width.px]="w()"`, `[attr.aria-label]="..."`
+- [ ] `[attr.disabled]` vs `[disabled]` (HTML attribute vs DOM property) ⚛️
+- [ ] 🏗 Rule: **no heavy logic in templates** — replace `{{ tasks().filter(...).length }}` with a `computed()` (see 2.1). Our `about.html` currently has exactly this anti-pattern — fix it.
 
-### 1.2 Компоненты
+### 1.2 Components
 
-- [ ] `input()` с default-значением и трансформацией: `input(0, { transform: numberAttribute })`
-- [ ] Алиасы входов/выходов: `input(0, { alias: 'value' })`
-- [ ] 🔑 `model()` — двусторонний биндинг `[(value)]` (banana-in-a-box) ⚛️ *(в React такого нет вообще — только value + onChange вручную)*
-- [ ] `host` в `@Component` — биндинги и слушатели на самом хост-элементе
-- [ ] Инлайновые `template` / `styles` — когда уместно (маленькие компоненты)
-- [ ] 🔑 View encapsulation: почему стили компонента не «протекают» наружу и как это устроено (эмуляция Shadow DOM атрибутами)
-- [ ] `ViewEncapsulation.None` — когда осознанно нужно и почему это опасно
-- [ ] `:host` и `:host-context()` селекторы в CSS компонента
-- [ ] 🏗 Соглашения об именовании файлов Angular 21 (`task-list.ts`, а не `task-list.component.ts`) и что старые гайды пишут иначе
+- [ ] `input()` with a default value and a transform: `input(0, { transform: numberAttribute })`
+- [ ] Input/output aliases: `input(0, { alias: 'value' })`
+- [ ] 🔑 `model()` — two-way binding `[(value)]` (banana-in-a-box) ⚛️ *(React has nothing like it — only value + onChange by hand)*
+- [ ] `host` in `@Component` — bindings and listeners on the host element itself
+- [ ] Inline `template` / `styles` — when they're appropriate (small components)
+- [ ] 🔑 View encapsulation: why component styles don't leak out, and how it works (Shadow DOM emulated with attributes)
+- [ ] `ViewEncapsulation.None` — when it's a deliberate choice and why it's risky
+- [ ] `:host` and `:host-context()` selectors in component CSS
+- [ ] 🏗 Angular 21 file naming conventions (`task-list.ts`, not `task-list.component.ts`) and why older guides say otherwise
 
-### 1.3 Жизненный цикл
+### 1.3 Lifecycle
 
-- [ ] `ngOnInit` — и почему в signal-эпоху он нужен реже, чем раньше ⚛️
-- [ ] `ngOnDestroy` и `DestroyRef` + `takeUntilDestroyed()` для отписок
-- [ ] `ngOnChanges` — и почему `input()` + `computed()`/`effect()` его вытесняют
-- [ ] `afterNextRender()` / `afterEveryRender()` — работа с DOM и браузерными API (важно при SSR!)
-- [ ] 🏗 Правило: не лезь в DOM руками, пока не исчерпал биндинги
+- [ ] `ngOnInit` — and why the signal era needs it far less often ⚛️
+- [ ] `ngOnDestroy` and `DestroyRef` + `takeUntilDestroyed()` for unsubscribing
+- [ ] `ngOnChanges` — and why `input()` + `computed()`/`effect()` are replacing it
+- [ ] `afterNextRender()` / `afterEveryRender()` — working with the DOM and browser APIs (critical under SSR!)
+- [ ] 🏗 Rule: don't reach into the DOM until you've exhausted bindings
 
-### Практика Части 1
-- [ ] Добавить в `to-do-list` фильтр «Все / Активные / Выполненные» через `@if`/`@switch`
-- [ ] Показать `@empty`-состояние («Задач пока нет»)
-- [ ] Вынести подсчёты из `about.html` в `computed()` внутри `TaskStore`
-
----
-
-## Часть 2. Сигналы и реактивность (ядро современного Angular) 🔑
-
-Самая важная часть. В zoneless-приложении сигналы — это буквально движок отрисовки.
-
-- [ ] 🔑 `computed()` — производное значение, пересчитывается лениво и кэшируется ⚛️ *(аналог `useMemo`, но без массива зависимостей — граф строится автоматически)*
-- [ ] Почему `computed` **не должен** иметь побочных эффектов
-- [ ] 🔑 `effect()` — реакция на изменения ⚛️ *(похоже на `useEffect`, но зависимости тоже собираются автоматически, и он не про «после рендера»)*
-- [ ] Когда `effect()` — правильный инструмент, а когда это code smell (логирование, синхронизация с localStorage — да; вычисление состояния — нет)
-- [ ] Очистка в `effect()` через `onCleanup`
-- [ ] `untracked()` — прочитать сигнал, не подписываясь на него
-- [ ] 🔑 `linkedSignal()` — writable-сигнал, который сбрасывается при изменении источника (например, выбранный элемент при смене списка)
-- [ ] `signal.asReadonly()` — 🏗 отдавать наружу read-only, менять только через методы сервиса
-- [ ] Равенство сигналов: параметр `equal`, почему объекты по умолчанию сравниваются по ссылке
-- [ ] `resource()` — асинхронный ресурс общего вида (не только HTTP), `loader`, `params`
-- [ ] Статусы ресурса: `.value()`, `.status()`, `.isLoading()`, `.error()`, `.hasValue()`
-- [ ] `httpResource` продвинуто: реактивный URL, `params`, `parse` со схемой (Zod), `map`
-- [ ] `rxResource()` — мост между RxJS и сигналами
-- [ ] `toSignal()` / `toObservable()` из `@angular/core/rxjs-interop`
-- [ ] 🏗 Паттерн: «сигналы для состояния, RxJS для событий/потоков»
-
-### Практика Части 2
-- [ ] Переписать `TaskStore`: `tasks` read-only, `activeCount`/`doneCount`/`filteredTasks` через `computed()`
-- [ ] Фильтр из Части 1 сделать сигналом, а `filteredTasks` — `computed()` от `tasks` и `filter`
-- [ ] Сохранять выбранный фильтр в `localStorage` через `effect()` (и корректно читать при старте, помня про SSR)
-- [ ] Показать спиннер по `tasksResource.isLoading()` и ошибку по `.error()`
+### Part 1 Practice
+- [ ] Add an "All / Active / Completed" filter to `to-do-list` using `@if`/`@switch`
+- [ ] Show an `@empty` state ("No tasks yet")
+- [ ] Move the counts out of `about.html` into a `computed()` inside `TaskStore`
 
 ---
 
-## Часть 3. RxJS: столько, сколько реально нужно ⚛️
+## Part 2. Signals and Reactivity (the Core of Modern Angular) 🔑
 
-Даже в signal-эпоху RxJS никуда не делся: HTTP, события роутера, формы, WebSocket, debounce.
+The most important part. In a zoneless app, signals are literally the rendering engine.
 
-- [ ] Observable vs Promise: ленивость, множественность значений, отмена
-- [ ] `subscribe()`, `unsubscribe()`, утечки подписок и `takeUntilDestroyed()`
-- [ ] 🔑 Операторы трансформации: `map`, `filter`, `tap`
-- [ ] 🔑 Higher-order: `switchMap` (отменить предыдущий — поиск), `mergeMap`, `concatMap` (очередь), `exhaustMap` (игнорировать пока идёт — двойной клик по «Сохранить»)
-- [ ] Когда какой из четырёх — это классический вопрос на собеседовании и реальный источник багов 🔑
+- [ ] 🔑 `computed()` — a derived value, lazily recomputed and cached ⚛️ *(like `useMemo`, but with no dependency array — the graph is built automatically)*
+- [ ] Why `computed` **must not** have side effects
+- [ ] 🔑 `effect()` — reacting to changes ⚛️ *(similar to `useEffect`, but dependencies are also collected automatically, and it isn't about "after render")*
+- [ ] When `effect()` is the right tool and when it's a code smell (logging, syncing to localStorage — yes; deriving state — no)
+- [ ] Cleanup in `effect()` via `onCleanup`
+- [ ] `untracked()` — read a signal without subscribing to it
+- [ ] 🔑 `linkedSignal()` — a writable signal that resets when its source changes (e.g. the selected item when the list changes)
+- [ ] `signal.asReadonly()` — 🏗 expose read-only, mutate only through service methods
+- [ ] Signal equality: the `equal` option, and why objects compare by reference by default
+- [ ] `resource()` — a general async resource (not just HTTP), `loader`, `params`
+- [ ] Resource statuses: `.value()`, `.status()`, `.isLoading()`, `.error()`, `.hasValue()`
+- [ ] `httpResource` in depth: reactive URL, `params`, `parse` with a schema (Zod), `map`
+- [ ] `rxResource()` — the bridge between RxJS and signals
+- [ ] `toSignal()` / `toObservable()` from `@angular/core/rxjs-interop`
+- [ ] 🏗 Pattern: "signals for state, RxJS for events/streams"
+
+### Part 2 Practice
+- [ ] Rewrite `TaskStore`: `tasks` read-only, `activeCount`/`doneCount`/`filteredTasks` via `computed()`
+- [ ] Turn the Part 1 filter into a signal, and make `filteredTasks` a `computed()` of `tasks` and `filter`
+- [ ] Persist the selected filter to `localStorage` via `effect()` (and read it correctly at startup, keeping SSR in mind)
+- [ ] Show a spinner from `tasksResource.isLoading()` and an error from `.error()`
+
+---
+
+## Part 3. RxJS: As Much as You Actually Need ⚛️
+
+Even in the signal era RxJS hasn't gone anywhere: HTTP, router events, forms, WebSockets, debouncing.
+
+- [ ] Observable vs Promise: laziness, multiple values, cancellation
+- [ ] `subscribe()`, `unsubscribe()`, subscription leaks and `takeUntilDestroyed()`
+- [ ] 🔑 Transformation operators: `map`, `filter`, `tap`
+- [ ] 🔑 Higher-order: `switchMap` (cancel the previous one — search), `mergeMap`, `concatMap` (queue), `exhaustMap` (ignore while in flight — double-click on "Save")
+- [ ] Which of the four and when — a classic interview question and a real source of bugs 🔑
 - [ ] `debounceTime`, `distinctUntilChanged`, `startWith`, `shareReplay`
-- [ ] Обработка ошибок: `catchError`, `retry`, `retryWhen`
+- [ ] Error handling: `catchError`, `retry`, `retryWhen`
 - [ ] `combineLatest`, `forkJoin`, `merge`
-- [ ] Subjects: `Subject`, `BehaviorSubject`, `ReplaySubject` — и почему в 2026 их чаще заменяет `signal`
-- [ ] `AsyncPipe` (`| async`) — и почему `toSignal()` обычно лучше в новом коде
-- [ ] 🏗 Правило: не подписывайся вручную там, где хватит `httpResource`/`toSignal`
+- [ ] Subjects: `Subject`, `BehaviorSubject`, `ReplaySubject` — and why in 2026 `signal` usually replaces them
+- [ ] `AsyncPipe` (`| async`) — and why `toSignal()` is usually better in new code
+- [ ] 🏗 Rule: don't subscribe by hand where `httpResource`/`toSignal` will do
 
-### Практика Части 3
-- [ ] Живой поиск по задачам: `input` → `debounceTime(300)` → `switchMap` → запрос к API
-- [ ] Защитить кнопку «Добавить» от дабл-клика через `exhaustMap`
-
----
-
-## Часть 4. Формы (глубоко)
-
-Reactive Forms — большая, недооценённая часть Angular, где он реально сильнее React.
-
-- [ ] 🔑 Typed Reactive Forms — строгая типизация `FormGroup` и `form.value`
-- [ ] `FormControl`, `FormGroup`, `FormArray` (динамические списки полей)
-- [ ] `FormBuilder` через `inject(FormBuilder)` вместо `new FormBuilder()` 🏗 *(в нашем коде сейчас `new` — поправить)*
-- [ ] `nonNullable: true` — и почему `form.value.title!` с восклицательным знаком это костыль
-- [ ] Состояния контрола: `valid`, `invalid`, `pristine`, `dirty`, `touched`, `pending`
-- [ ] Показ ошибок только после `touched`/`dirty` 🏗
-- [ ] Встроенные валидаторы + кастомный синхронный валидатор
-- [ ] Асинхронный валидатор (проверка уникальности на сервере)
-- [ ] Кросс-полевая валидация (пароль + подтверждение) на уровне `FormGroup`
-- [ ] `valueChanges` / `statusChanges` как Observable
-- [ ] `setValue` vs `patchValue`, `reset()` и подводные камни
-- [ ] `updateOn: 'blur' | 'submit'` — когда валидировать
-- [ ] 🔑 `ControlValueAccessor` — свой компонент как полноценный контрол формы ⚛️ *(мощная штука без прямого аналога в React)*
-- [ ] Template-driven forms (`ngModel`) — знать, что есть, и **не использовать** в новых проектах 🏗
-- [ ] Заглянуть в экспериментальный Signal Forms (`@angular/forms/signals`) — куда всё движется
-
-### Практика Части 4
-- [ ] Типизировать `AddTaskForm`, убрать `!`
-- [ ] Форма редактирования задачи: title, описание, приоритет (select), дедлайн (date), теги через `FormArray`
-- [ ] Свой компонент `<app-star-rating>` через `ControlValueAccessor`
+### Part 3 Practice
+- [ ] Live task search: `input` → `debounceTime(300)` → `switchMap` → API request
+- [ ] Protect the "Add" button from double-clicks with `exhaustMap`
 
 ---
 
-## Часть 5. Роутинг (продвинутый)
+## Part 4. Forms (In Depth)
 
-- [ ] Параметры маршрута `:id` и чтение через `withComponentInputBinding()` ⚛️ *(параметр приходит прямо в `input()` — очень удобно)*
-- [ ] `ActivatedRoute`, `paramMap`, `queryParamMap` как сигналы/Observable
-- [ ] Query params: фильтры и пагинация в URL 🏗
+Reactive Forms are a big, underrated part of Angular where it's genuinely stronger than React.
+
+- [ ] 🔑 Typed Reactive Forms — strict typing for `FormGroup` and `form.value`
+- [ ] `FormControl`, `FormGroup`, `FormArray` (dynamic field lists)
+- [ ] `FormBuilder` via `inject(FormBuilder)` instead of `new FormBuilder()` 🏗 *(our code currently uses `new` — fix it)*
+- [ ] `nonNullable: true` — and why `form.value.title!` with the bang is a workaround
+- [ ] Control states: `valid`, `invalid`, `pristine`, `dirty`, `touched`, `pending`
+- [ ] Showing errors only after `touched`/`dirty` 🏗
+- [ ] Built-in validators + a custom synchronous validator
+- [ ] An async validator (server-side uniqueness check)
+- [ ] Cross-field validation (password + confirmation) at the `FormGroup` level
+- [ ] `valueChanges` / `statusChanges` as Observables
+- [ ] `setValue` vs `patchValue`, `reset()` and its pitfalls
+- [ ] `updateOn: 'blur' | 'submit'` — when to validate
+- [ ] 🔑 `ControlValueAccessor` — your own component as a first-class form control ⚛️ *(powerful, with no direct React equivalent)*
+- [ ] Template-driven forms (`ngModel`) — know they exist and **don't use them** in new projects 🏗
+- [ ] Take a look at experimental Signal Forms (`@angular/forms/signals`) — where this is heading
+
+### Part 4 Practice
+- [ ] Type `AddTaskForm` properly, drop the `!`
+- [ ] A task edit form: title, description, priority (select), due date, tags via `FormArray`
+- [ ] A custom `<app-star-rating>` component via `ControlValueAccessor`
+
+---
+
+## Part 5. Routing (Advanced)
+
+- [ ] Route params `:id` and reading them via `withComponentInputBinding()` ⚛️ *(the param arrives directly as an `input()` — very convenient)*
+- [ ] `ActivatedRoute`, `paramMap`, `queryParamMap` as signals/Observables
+- [ ] Query params: filters and pagination in the URL 🏗
 - [ ] `Router.navigate()` / `navigateByUrl()`, `relativeTo`
-- [ ] `routerLinkActive` для подсветки активной вкладки
-- [ ] Вложенные (child) маршруты и несколько `<router-outlet>`
-- [ ] 🔑 Lazy loading: `loadComponent` и `loadChildren` ⚛️ *(явный аналог `next/dynamic`, только на уровне роутинга)*
-- [ ] Guards как функции: `canActivate`, `canMatch`, `canDeactivate` (защита от ухода с несохранённой формы)
-- [ ] `Resolve` — предзагрузка данных до активации маршрута (и когда лучше `httpResource` в компоненте)
-- [ ] `Title` service / `title` в route config
-- [ ] Стратегии предзагрузки (`PreloadAllModules`, кастомные)
-- [ ] `withViewTransitions()` — анимации переходов через View Transitions API
-- [ ] Скролл-позиция: `withInMemoryScrolling()`
-- [ ] Обработка 404 (`path: '**'`) и редиректы
+- [ ] `routerLinkActive` for highlighting the active tab
+- [ ] Nested (child) routes and multiple `<router-outlet>`s
+- [ ] 🔑 Lazy loading: `loadComponent` and `loadChildren` ⚛️ *(an explicit `next/dynamic`, but at the routing level)*
+- [ ] Functional guards: `canActivate`, `canMatch`, `canDeactivate` (blocking navigation away from an unsaved form)
+- [ ] `Resolve` — preloading data before route activation (and when `httpResource` in the component is better)
+- [ ] `Title` service / `title` in the route config
+- [ ] Preloading strategies (`PreloadAllModules`, custom ones)
+- [ ] `withViewTransitions()` — transition animations via the View Transitions API
+- [ ] Scroll position: `withInMemoryScrolling()`
+- [ ] Handling 404 (`path: '**'`) and redirects
 
-### Практика Части 5
-- [ ] Страница `/tasks/:id` с деталями задачи через `withComponentInputBinding`
-- [ ] Фильтр задач хранить в query params (чтобы ссылка была шарящейся)
-- [ ] `/about` перевести на `loadComponent` (lazy)
-- [ ] Guard, не дающий уйти со страницы редактирования при несохранённых изменениях
-- [ ] Страница 404
-
----
-
-## Часть 6. HTTP (продвинутый)
-
-- [ ] 🔑 Функциональные интерцепторы: `withInterceptors([...])` ⚛️ *(аналог middleware/axios interceptors)*
-- [ ] Интерцептор авторизации (подстановка JWT)
-- [ ] Интерцептор логирования и глобальной обработки ошибок
-- [ ] Интерцептор индикатора загрузки (глобальный прогресс-бар)
-- [ ] Retry с экспоненциальной задержкой
-- [ ] `HttpParams`, `HttpHeaders`, типизация ответов
-- [ ] `HttpErrorResponse` и нормализация ошибок API 🏗
-- [ ] Загрузка файлов и отслеживание прогресса (`reportProgress`, `HttpEventType`)
-- [ ] `withFetch()` — fetch-бэкенд вместо XHR
-- [ ] SSR-специфика: `TransferState` / `withHttpTransferCacheOptions()` — не делать один и тот же запрос дважды (на сервере и на клиенте) 🔑
-- [ ] Тестирование HTTP: `provideHttpClientTesting`, `HttpTestingController`
-- [ ] 🏗 Слой API: не размазывать URL по компонентам, а держать типизированные сервисы-клиенты
-- [ ] Валидация ответов сервера через Zod (и `parse` в `httpResource`) 🏗
-
-### Практика Части 6
-- [ ] Вынести `API_URL` в `environments` / `InjectionToken`
-- [ ] Глобальный error-интерцептор + тост об ошибке
-- [ ] Оптимистичное обновление задачи (менять UI сразу, откатывать при ошибке) вместо `.reload()` после каждой мутации
+### Part 5 Practice
+- [ ] A `/tasks/:id` detail page using `withComponentInputBinding`
+- [ ] Keep the task filter in query params (so the link is shareable)
+- [ ] Convert `/about` to `loadComponent` (lazy)
+- [ ] A guard preventing navigation away from the edit page with unsaved changes
+- [ ] A 404 page
 
 ---
 
-## Часть 7. State management
+## Part 6. HTTP (Advanced)
 
-- [ ] 🏗 Уровни состояния: локальное в компоненте → сервис фичи → глобальный сервис → серверный кэш (`httpResource`). Не тащить всё в глобальный store ⚛️
-- [ ] Сервис с сигналами как основной паттерн (у нас уже есть — довести до идиоматичного вида: private writable + public readonly)
+- [ ] 🔑 Functional interceptors: `withInterceptors([...])` ⚛️ *(like middleware / axios interceptors)*
+- [ ] An auth interceptor (attaching the JWT)
+- [ ] A logging and global error-handling interceptor
+- [ ] A loading-indicator interceptor (global progress bar)
+- [ ] Retry with exponential backoff
+- [ ] `HttpParams`, `HttpHeaders`, typing responses
+- [ ] `HttpErrorResponse` and normalizing API errors 🏗
+- [ ] File upload with progress tracking (`reportProgress`, `HttpEventType`)
+- [ ] `withFetch()` — the fetch backend instead of XHR
+- [ ] SSR specifics: `TransferState` / `withHttpTransferCacheOptions()` — don't run the same request twice (server and client) 🔑
+- [ ] Testing HTTP: `provideHttpClientTesting`, `HttpTestingController`
+- [ ] 🏗 An API layer: don't scatter URLs across components, keep typed client services
+- [ ] Validating server responses with Zod (and `parse` in `httpResource`) 🏗
+
+### Part 6 Practice
+- [ ] Move `API_URL` into `environments` / an `InjectionToken`
+- [ ] A global error interceptor + an error toast
+- [ ] Optimistic task updates (change the UI immediately, roll back on failure) instead of `.reload()` after every mutation
+
+---
+
+## Part 7. State Management
+
+- [ ] 🏗 State levels: local in the component → feature service → global service → server cache (`httpResource`). Don't drag everything into a global store ⚛️
+- [ ] A signal-based service as the primary pattern (we already have one — bring it to idiomatic shape: private writable + public readonly)
 - [ ] 🔑 NgRx SignalStore (`@ngrx/signals`) — `signalStore`, `withState`, `withComputed`, `withMethods`, `withHooks`
-- [ ] `signalStore` на уровне фичи vs `providedIn: 'root'`
-- [ ] `rxMethod` для асинхронных операций в SignalStore
-- [ ] Кастомные фичи SignalStore (переиспользуемые куски, напр. `withEntities`, `withLogger`)
-- [ ] Обзорно: классический NgRx (Store/Actions/Reducers/Effects) — знать, что это, уметь читать чужой код ⚛️ *(это Redux, знакомо)*
-- [ ] Когда классический NgRx оправдан, а когда это оверинжиниринг 🏗
-- [ ] Обзорно: альтернативы (Elf, Akita — legacy) — просто чтобы узнавать в вакансиях
+- [ ] `signalStore` at the feature level vs `providedIn: 'root'`
+- [ ] `rxMethod` for async operations in SignalStore
+- [ ] Custom SignalStore features (reusable pieces, e.g. `withEntities`, `withLogger`)
+- [ ] Overview: classic NgRx (Store/Actions/Reducers/Effects) — know what it is, be able to read other people's code ⚛️ *(it's Redux, familiar ground)*
+- [ ] When classic NgRx is justified and when it's over-engineering 🏗
+- [ ] Overview: alternatives (Elf, Akita — legacy) — just to recognize them in job posts
 
-### Практика Части 7
-- [ ] Переписать `TaskStore` на `@ngrx/signals` SignalStore и сравнить с ручным сервисом
-
----
-
-## Часть 8. Директивы, пайпы, композиция UI
-
-- [ ] 🔑 Атрибутивные директивы: своя `appHighlight`, `appAutofocus`
-- [ ] Директивы с `input()` и `host`-биндингами
-- [ ] 🔑 `hostDirectives` — композиция поведения без наследования 🏗 ⚛️ *(закрывает то, для чего в React были HOC/хуки)*
-- [ ] Структурные директивы и `TemplateRef` / `ViewContainerRef` — как это работает под капотом
-- [ ] Свой пайп (`@Pipe`), `pure` vs `impure` и почему impure опасны для производительности
-- [ ] Встроенные пайпы: `date`, `currency`, `decimal`, `percent`, `json`, `keyvalue`, `slice`
-- [ ] 🔑 Content projection: `<ng-content>`, множественные слоты с `select` ⚛️ *(это `children` и «слоты» в React)*
-- [ ] `ng-template` + `ngTemplateOutlet` — передача кусков разметки как параметров ⚛️ *(аналог render-props)*
-- [ ] `ng-container` — группировка без лишнего DOM-узла
-- [ ] `viewChild()` / `viewChildren()` / `contentChild()` как сигналы
-- [ ] `ElementRef`, `Renderer2` — и почему прямой доступ к DOM ломает SSR 🏗
-- [ ] Динамические компоненты: `createComponent`, `NgComponentOutlet`
-- [ ] `@defer` — ленивая загрузка куска шаблона: триггеры `on viewport`, `on interaction`, `on idle`, блоки `@placeholder`/`@loading`/`@error` 🔑
-- [ ] CDK: `@angular/cdk` — overlay, portal, a11y, drag-drop, virtual scroll (без Material)
-
-### Практика Части 8
-- [ ] Свой `<app-modal>` с content projection
-- [ ] Директива `appAutofocus` для поля ввода задачи
-- [ ] Пайп «сколько времени назад» для дедлайна
-- [ ] Тяжёлый блок статистики обернуть в `@defer (on viewport)`
+### Part 7 Practice
+- [ ] Rewrite `TaskStore` with `@ngrx/signals` SignalStore and compare it to the hand-rolled service
 
 ---
 
-## Часть 9. Dependency Injection (глубоко) ⚛️
+## Part 8. Directives, Pipes, UI Composition
 
-Здесь Angular совсем не похож на React — и это его главная архитектурная сила.
+- [ ] 🔑 Attribute directives: your own `appHighlight`, `appAutofocus`
+- [ ] Directives with `input()` and `host` bindings
+- [ ] 🔑 `hostDirectives` — composing behavior without inheritance 🏗 ⚛️ *(covers what HOCs/hooks did in React)*
+- [ ] Structural directives and `TemplateRef` / `ViewContainerRef` — how it works under the hood
+- [ ] A custom pipe (`@Pipe`), `pure` vs `impure`, and why impure ones hurt performance
+- [ ] Built-in pipes: `date`, `currency`, `decimal`, `percent`, `json`, `keyvalue`, `slice`
+- [ ] 🔑 Content projection: `<ng-content>`, multiple slots with `select` ⚛️ *(this is `children` and "slots" in React)*
+- [ ] `ng-template` + `ngTemplateOutlet` — passing chunks of markup as parameters ⚛️ *(like render props)*
+- [ ] `ng-container` — grouping without an extra DOM node
+- [ ] `viewChild()` / `viewChildren()` / `contentChild()` as signals
+- [ ] `ElementRef`, `Renderer2` — and why direct DOM access breaks SSR 🏗
+- [ ] Dynamic components: `createComponent`, `NgComponentOutlet`
+- [ ] `@defer` — lazily loading a chunk of the template: `on viewport`, `on interaction`, `on idle` triggers, `@placeholder`/`@loading`/`@error` blocks 🔑
+- [ ] CDK: `@angular/cdk` — overlay, portal, a11y, drag-drop, virtual scroll (no Material required)
 
-- [ ] Иерархия инжекторов: root → route → component
-- [ ] `providers` на уровне компонента/маршрута — инстанс на каждый компонент/маршрут
-- [ ] 🔑 `InjectionToken<T>` — типобезопасные токены для конфигов
+### Part 8 Practice
+- [ ] A custom `<app-modal>` with content projection
+- [ ] An `appAutofocus` directive for the task input
+- [ ] A "time ago" pipe for due dates
+- [ ] Wrap the heavy stats block in `@defer (on viewport)`
+
+---
+
+## Part 9. Dependency Injection (In Depth) ⚛️
+
+This is where Angular looks nothing like React — and it's its main architectural strength.
+
+- [ ] Injector hierarchy: root → route → component
+- [ ] `providers` at the component/route level — one instance per component/route
+- [ ] 🔑 `InjectionToken<T>` — type-safe tokens for configuration
 - [ ] `useValue`, `useClass`, `useExisting`, `useFactory`
-- [ ] `multi: true` провайдеры (как устроены интерцепторы)
-- [ ] Опции `inject()`: `optional`, `skipSelf`, `self`, `host`
-- [ ] `EnvironmentInjector`, `runInInjectionContext` — что делать, когда `inject()` «вне контекста»
-- [ ] Паттерн «provide-функций» (`provideX()`) для настройки библиотек 🏗
-- [ ] `APP_INITIALIZER` / `provideAppInitializer` — загрузка конфига до старта приложения
-- [ ] 🏗 DI как способ подменять реализации в тестах — без jest.mock-магии
-- [ ] `@Injectable` с абстрактным классом/интерфейсом как контрактом (инверсия зависимостей) — знакомо по NestJS
+- [ ] `multi: true` providers (how interceptors are wired)
+- [ ] `inject()` options: `optional`, `skipSelf`, `self`, `host`
+- [ ] `EnvironmentInjector`, `runInInjectionContext` — what to do when `inject()` is "out of context"
+- [ ] The "provide function" pattern (`provideX()`) for configuring libraries 🏗
+- [ ] `APP_INITIALIZER` / `provideAppInitializer` — loading config before the app starts
+- [ ] 🏗 DI as the way to swap implementations in tests — no jest.mock magic
+- [ ] `@Injectable` with an abstract class/interface as the contract (dependency inversion) — familiar from NestJS
 
-### Практика Части 9
-- [ ] `API_URL` через `InjectionToken` вместо константы в файле
-- [ ] Абстрактный `TasksApi` + две реализации: HTTP и in-memory (для тестов/демо)
-
----
-
-## Часть 10. Change detection и производительность 🔑
-
-- [ ] Как Angular обновляет DOM: dirty-marking и проход по дереву компонентов ⚛️
-- [ ] Zone.js: что это было, почему от него уходят, и почему у тебя его уже нет
-- [ ] 🔑 Zoneless change detection: `provideZonelessChangeDetection()` — как реактивность держится на сигналах
-- [ ] Что «ломает» zoneless: изменение обычных полей класса без сигнала, `setTimeout` с мутацией состояния
-- [ ] `ChangeDetectionStrategy.OnPush` — почему в zoneless это по сути норма 🏗
-- [ ] `ChangeDetectorRef`: `markForCheck`, `detectChanges` — легаси-инструменты, знать для чужого кода
-- [ ] Angular DevTools: профайлер отрисовки, граф компонентов, инспектор сигналов 🔑
-- [ ] `track` в `@for`: почему неправильный track = переотрисовка всего списка
-- [ ] `NgOptimizedImage` (`ngSrc`) — картинки, LCP, priority
-- [ ] Virtual scroll (CDK) для длинных списков
-- [ ] Анализ бандла: `ng build --stats-json` + `esbuild-visualizer` / `source-map-explorer`
-- [ ] Budgets в `angular.json` — упасть в CI, если бандл распух 🏗
-- [ ] Core Web Vitals: LCP / CLS / INP и что на них влияет в Angular-приложении
-
-### Практика Части 10
-- [ ] Профилировать список из 5000 задач в DevTools, найти и убрать лишние отрисовки
-- [ ] Прикрутить virtual scroll и сравнить метрики
+### Part 9 Practice
+- [ ] `API_URL` through an `InjectionToken` instead of a module-level constant
+- [ ] An abstract `TasksApi` + two implementations: HTTP and in-memory (for tests/demo)
 
 ---
 
-## Часть 11. Тестирование
+## Part 10. Change Detection and Performance 🔑
 
-- [ ] Как устроен `ng test` на Vitest в этом проекте (билдер `@angular/build:unit-test`)
-- [ ] 🔑 Юнит-тест сервиса без TestBed (просто `new`/`inject` — сигналы тестируются легко)
-- [ ] `TestBed.configureTestingModule` — конфигурация тестового DI
+- [ ] How Angular updates the DOM: dirty marking and walking the component tree ⚛️
+- [ ] Zone.js: what it was, why the ecosystem is moving away, and why you already don't have it
+- [ ] 🔑 Zoneless change detection: `provideZonelessChangeDetection()` — how reactivity rests on signals
+- [ ] What "breaks" zoneless: mutating plain class fields instead of signals, `setTimeout` mutating state
+- [ ] `ChangeDetectionStrategy.OnPush` — why it's effectively the norm under zoneless 🏗
+- [ ] `ChangeDetectorRef`: `markForCheck`, `detectChanges` — legacy tools, know them for other people's code
+- [ ] Angular DevTools: render profiler, component graph, signal inspector 🔑
+- [ ] `track` in `@for`: why the wrong track means re-rendering the whole list
+- [ ] `NgOptimizedImage` (`ngSrc`) — images, LCP, priority
+- [ ] Virtual scroll (CDK) for long lists
+- [ ] Bundle analysis: `ng build --stats-json` + `esbuild-visualizer` / `source-map-explorer`
+- [ ] Budgets in `angular.json` — fail CI when the bundle grows 🏗
+- [ ] Core Web Vitals: LCP / CLS / INP and what affects them in an Angular app
+
+### Part 10 Practice
+- [ ] Profile a 5,000-task list in DevTools, find and remove unnecessary renders
+- [ ] Add virtual scroll and compare the metrics
+
+---
+
+## Part 11. Testing
+
+- [ ] How `ng test` works on Vitest in this project (the `@angular/build:unit-test` builder)
+- [ ] 🔑 Unit-testing a service without TestBed (just `new`/`inject` — signals are easy to test)
+- [ ] `TestBed.configureTestingModule` — configuring test DI
 - [ ] `ComponentFixture`, `detectChanges()`, `fixture.componentInstance`
-- [ ] Подмена зависимостей через `providers` (вместо мока модуля) 🏗 ⚛️
-- [ ] Тестирование `input()`/`output()`: `fixture.componentRef.setInput()`
-- [ ] Тестирование HTTP: `HttpTestingController`, `expectOne`, `flush`
-- [ ] Асинхронность: `fakeAsync`, `tick`, `flush`, `waitForAsync`
-- [ ] Тестирование роутинга: `provideRouter` + `RouterTestingHarness`
-- [ ] Тестирование форм
-- [ ] 🏗 Что тестировать, а что нет: сервисы и логика — обязательно; вёрстка — по необходимости
-- [ ] Component Test Harnesses (CDK) — стабильные тесты UI без селекторов по CSS
-- [ ] E2E на Playwright: happy path, авторизация, CI
-- [ ] Coverage и разумные пороги 🏗
+- [ ] Swapping dependencies through `providers` (instead of mocking a module) 🏗 ⚛️
+- [ ] Testing `input()`/`output()`: `fixture.componentRef.setInput()`
+- [ ] Testing HTTP: `HttpTestingController`, `expectOne`, `flush`
+- [ ] Async: `fakeAsync`, `tick`, `flush`, `waitForAsync`
+- [ ] Testing routing: `provideRouter` + `RouterTestingHarness`
+- [ ] Testing forms
+- [ ] 🏗 What to test and what not to: services and logic — always; markup — as needed
+- [ ] Component Test Harnesses (CDK) — stable UI tests without CSS selectors
+- [ ] E2E with Playwright: happy path, auth, CI
+- [ ] Coverage and sensible thresholds 🏗
 
-### Практика Части 11
-- [ ] Полностью покрыть `TaskStore` тестами (включая ошибки HTTP)
-- [ ] Тест `TaskItem`: клик по чекбоксу эмитит `toggle` с нужным id
-- [ ] E2E-сценарий: добавил задачу → отметил → удалил
+### Part 11 Practice
+- [ ] Fully cover `TaskStore` with tests (including HTTP failures)
+- [ ] A `TaskItem` test: clicking the checkbox emits `toggle` with the right id
+- [ ] An E2E scenario: add a task → complete it → delete it
 
 ---
 
-## Часть 12. SSR, гидратация, деплой
+## Part 12. SSR, Hydration, Deployment
 
-- [ ] Как устроен SSR в этом проекте: `main.server.ts`, `server.ts`, `app.config.server.ts`
-- [ ] 🔑 `provideClientHydration()` и что такое гидратация ⚛️ *(знакомо по Next.js)*
-- [ ] `withEventReplay()` — что это даёт (клики до гидратации не теряются)
+- [ ] How SSR is wired in this project: `main.server.ts`, `server.ts`, `app.config.server.ts`
+- [ ] 🔑 `provideClientHydration()` and what hydration is ⚛️ *(familiar from Next.js)*
+- [ ] `withEventReplay()` — what it buys you (clicks before hydration aren't lost)
 - [ ] Incremental hydration: `@defer (hydrate on ...)` 🔑
-- [ ] Ошибки гидратации (NG0500 и компания) — причины и отладка
-- [ ] Что нельзя делать в SSR: `window`, `document`, `localStorage` напрямую
-- [ ] `isPlatformBrowser()` / `afterNextRender()` как правильное решение 🏗
-- [ ] `TransferState` — переиспользование данных с сервера на клиенте
+- [ ] Hydration errors (NG0500 and friends) — causes and debugging
+- [ ] What you can't do under SSR: `window`, `document`, `localStorage` directly
+- [ ] `isPlatformBrowser()` / `afterNextRender()` as the correct solution 🏗
+- [ ] `TransferState` — reusing server data on the client
 - [ ] Prerender / SSG: `app.routes.server.ts`, `RenderMode.Prerender | Server | Client` 🔑
-- [ ] SEO: `Meta` и `Title` сервисы
-- [ ] Продакшн-сборка, `ng build`, что лежит в `dist/`
-- [ ] Деплой: статика (Netlify/Vercel/Pages) vs Node-сервер (Docker)
-- [ ] Dockerfile для SSR-приложения
+- [ ] SEO: the `Meta` and `Title` services
+- [ ] Production build, `ng build`, what ends up in `dist/`
+- [ ] Deployment: static (Netlify/Vercel/Pages) vs a Node server (Docker)
+- [ ] A Dockerfile for the SSR app
 
-### Практика Части 12
-- [ ] Починить/проверить, что `httpResource` не дублирует запрос при SSR
-- [ ] `/about` сделать prerender, `/tasks/:id` — server-render
-- [ ] Собрать Docker-образ и запустить локально
+### Part 12 Practice
+- [ ] Verify/fix that `httpResource` doesn't duplicate its request under SSR
+- [ ] Make `/about` prerendered and `/tasks/:id` server-rendered
+- [ ] Build a Docker image and run it locally
 
 ---
 
-## Часть 13. Архитектура и best practices 🏗
+## Part 13. Architecture and Best Practices 🏗
 
-Главная часть для перехода на «проф уровень» — тут не фичи, а решения.
+The key part for reaching a professional level — decisions, not features.
 
-### 13.1 Структура проекта
+### 13.1 Project Structure
 
-- [ ] Feature-based структура: `core/` (синглтоны, интерцепторы, guards), `shared/` (переиспользуемое), `features/` (фичи), `pages/` (роуты)
-- [ ] Правило «фича не импортирует из другой фичи» — только через `shared`/`core` 🔑
-- [ ] Barrel-файлы (`index.ts`): плюсы и минусы для tree-shaking
-- [ ] Границы через ESLint-правила (`@angular-eslint`, `eslint-plugin-boundaries`)
-- [ ] Path aliases в `tsconfig` (`@core/*`, `@features/*`) вместо `../../../`
-- [ ] Обзорно: Nx-монорепо и библиотеки — как это делают в больших командах
+- [ ] Feature-based structure: `core/` (singletons, interceptors, guards), `shared/` (reusable), `features/` (features), `pages/` (routes)
+- [ ] The "a feature never imports from another feature" rule — only through `shared`/`core` 🔑
+- [ ] Barrel files (`index.ts`): pros and cons for tree-shaking
+- [ ] Enforcing boundaries with ESLint rules (`@angular-eslint`, `eslint-plugin-boundaries`)
+- [ ] Path aliases in `tsconfig` (`@core/*`, `@features/*`) instead of `../../../`
+- [ ] Overview: Nx monorepos and libraries — how large teams do it
 
-### 13.2 Правила написания кода
+### 13.2 Coding Rules
 
-- [ ] Официальный Angular Style Guide (переписан в 2025 — читать актуальную версию)
-- [ ] Компоненты: только представление; логика — в сервисах 🔑
-- [ ] Всегда `OnPush`-совместимый код (никаких мутаций входных объектов)
-- [ ] Не подписываться в компоненте, если можно `httpResource`/`toSignal`
-- [ ] Всегда отписываться там, где подписался (`takeUntilDestroyed`)
-- [ ] `readonly` для инжектированных зависимостей и сигналов
-- [ ] Приватные сигналы + публичные `computed`/`asReadonly`
-- [ ] Никакой бизнес-логики в шаблоне
-- [ ] Строгий TypeScript: `strict`, `strictTemplates`, отказ от `any`
-- [ ] `ESLint` + `Prettier` в проекте и в CI
-- [ ] Осмысленные имена: `TaskStore` vs `TaskService` vs `TasksApi` — разные роли, разные суффиксы
+- [ ] The official Angular Style Guide (rewritten in 2025 — read the current version)
+- [ ] Components: presentation only; logic lives in services 🔑
+- [ ] Always write `OnPush`-compatible code (never mutate input objects)
+- [ ] Don't subscribe in a component when `httpResource`/`toSignal` will do
+- [ ] Always unsubscribe where you subscribed (`takeUntilDestroyed`)
+- [ ] `readonly` for injected dependencies and signals
+- [ ] Private signals + public `computed`/`asReadonly`
+- [ ] No business logic in templates
+- [ ] Strict TypeScript: `strict`, `strictTemplates`, no `any`
+- [ ] `ESLint` + `Prettier` in the project and in CI
+- [ ] Meaningful names: `TaskStore` vs `TaskService` vs `TasksApi` — different roles, different suffixes
 
-### 13.3 Качество и процессы
+### 13.3 Quality and Process
 
-- [ ] Обработка ошибок: глобальный `ErrorHandler`, дружелюбные сообщения, Sentry
-- [ ] Логирование и мониторинг (Sentry / OpenTelemetry)
+- [ ] Error handling: a global `ErrorHandler`, friendly messages, Sentry
+- [ ] Logging and monitoring (Sentry / OpenTelemetry)
 - [ ] Feature flags
-- [ ] `environments` и конфиг для разных стендов
-- [ ] Версионирование и обновление Angular: `ng update`, чтение changelog, deprecations
-- [ ] CI: lint + test + build на каждый PR (GitHub Actions)
-- [ ] Conventional commits, PR-ревью, changelog
+- [ ] `environments` and per-stage configuration
+- [ ] Versioning and upgrading Angular: `ng update`, reading changelogs, deprecations
+- [ ] CI: lint + test + build on every PR (GitHub Actions)
+- [ ] Conventional commits, PR review, changelog
 
-### 13.4 Доступность и интернационализация
+### 13.4 Accessibility and Internationalization
 
-- [ ] a11y: семантика, `aria-*`, фокус, клавиатурная навигация
+- [ ] a11y: semantics, `aria-*`, focus management, keyboard navigation
 - [ ] CDK a11y: `FocusTrap`, `LiveAnnouncer`
-- [ ] Проверка `axe` / Lighthouse
-- [ ] i18n: встроенный `@angular/localize` vs `transloco` — плюсы/минусы
-- [ ] Локализация дат/чисел/валют, `LOCALE_ID`
-- [ ] Тёмная тема и `prefers-color-scheme`
+- [ ] Checking with `axe` / Lighthouse
+- [ ] i18n: built-in `@angular/localize` vs `transloco` — trade-offs
+- [ ] Localizing dates/numbers/currency, `LOCALE_ID`
+- [ ] Dark theme and `prefers-color-scheme`
 
-### 13.5 Безопасность
+### 13.5 Security
 
-- [ ] Как Angular защищает от XSS (санитизация) и как её случайно отключают (`bypassSecurityTrust*`)
-- [ ] `[innerHTML]` — когда можно и что проверить
+- [ ] How Angular protects against XSS (sanitization) and how people accidentally disable it (`bypassSecurityTrust*`)
+- [ ] `[innerHTML]` — when it's acceptable and what to check
 - [ ] CSRF/XSRF: `withXsrfConfiguration()`
-- [ ] Хранение токенов: localStorage vs httpOnly cookie 🔑
-- [ ] CSP и Angular
-- [ ] Не полагаться на фронтовые guard'ы как на защиту — авторизация всегда на сервере 🔑
+- [ ] Token storage: localStorage vs httpOnly cookie 🔑
+- [ ] CSP and Angular
+- [ ] Never treat frontend guards as protection — authorization always lives on the server 🔑
 
 ---
 
-## Часть 14. Экосистема и инструменты
+## Part 14. Ecosystem and Tooling
 
-- [ ] Angular CLI глубже: `ng generate` со схемами, `--dry-run`, `ng add`
-- [ ] Свои schematics (генератор фичи по шаблону команды)
-- [ ] Angular Material / CDK — когда брать, как темизировать
-- [ ] Альтернативы UI: PrimeNG, Spartan/ng, Tailwind + свои компоненты
-- [ ] Tailwind в Angular (у тебя уже подключён — освоить осознанно)
-- [ ] Storybook для Angular
-- [ ] Angular DevTools (расширение браузера)
-- [ ] Angular Language Service в редакторе
-- [ ] `@angular/pwa`: сервис-воркер, офлайн, обновления
-- [ ] WebSockets / SSE в Angular
-- [ ] Работа с картами/графиками (ECharts, Chart.js) в Angular-обёртке
-- [ ] Обзорно: Angular Elements (компонент как web-component), микрофронтенды (Module Federation)
+- [ ] Angular CLI in depth: `ng generate` with schematics, `--dry-run`, `ng add`
+- [ ] Custom schematics (a feature generator matching your team's template)
+- [ ] Angular Material / CDK — when to adopt, how to theme
+- [ ] UI alternatives: PrimeNG, Spartan/ng, Tailwind + your own components
+- [ ] Tailwind in Angular (already wired up — learn it deliberately)
+- [ ] Storybook for Angular
+- [ ] Angular DevTools (browser extension)
+- [ ] Angular Language Service in the editor
+- [ ] `@angular/pwa`: service worker, offline, updates
+- [ ] WebSockets / SSE in Angular
+- [ ] Maps and charts (ECharts, Chart.js) with Angular wrappers
+- [ ] Overview: Angular Elements (a component as a web component), micro-frontends (Module Federation)
 
 ---
 
-## Часть 15. Пет-проект: **DevLog** 🚀
+## Part 15. Pet Project: **DevLog** 🚀
 
-> Финальный проект, где всё вышеперечисленное применяется в бою. Со своим сервером на **C# / ASP.NET Core** — учим два стека параллельно на одном домене (см. параллельный трек в Части 16).
+> The final project where everything above gets applied for real. With its own server in **C# / ASP.NET Core** — both stacks learned on one shared domain (see [DOTNET_ROADMAP.md](./DOTNET_ROADMAP.md)).
 
-### Идея
+### The Idea
 
-**DevLog** — трекер пет-проектов и обучения. Мета-проект: в нём ты ведёшь свои же проекты (включая изучение Angular по этому роадмапу).
+**DevLog** — a tracker for pet projects and learning. A meta-project: you track your own projects in it (including learning Angular from this roadmap).
 
-Почему именно он: он требует ровно тех фич, которые надо освоить — авторизация, вложенные сущности, канбан с drag&drop, таймтрекинг (реальное время → RxJS), графики (агрегация), загрузка файлов, фильтры в URL, realtime-обновления, оффлайн.
+Why this one: it demands exactly the features worth mastering — auth, nested entities, a drag-and-drop kanban board, time tracking (real time → RxJS), charts (aggregation), file uploads, URL filters, realtime updates, offline.
 
-**Домен:**
-- `Project` — пет-проект (название, описание, стек, статус, обложка)
-- `Task` — задача в проекте (канбан-колонки: backlog / in progress / review / done, приоритет, теги, дедлайн)
-- `TimeEntry` — залогированное время по задаче (запуск/остановка таймера)
-- `Note` — заметка/дневниковая запись в проекте (markdown)
-- `User` — авторизация, свой профиль
+**Domain:**
+- `Project` — a pet project (name, description, stack, status, cover image)
+- `Task` — a task in a project (kanban columns: backlog / in progress / review / done, priority, tags, due date)
+- `TimeEntry` — logged time against a task (timer start/stop)
+- `Note` — a note/journal entry in a project (markdown)
+- `User` — auth, own profile
 
-**Стек:**
-- Backend: **ASP.NET Core Web API (.NET 10 LTS)** + **EF Core** + PostgreSQL (Docker Compose), JWT-авторизация, **SignalR** для realtime
+**Stack:**
+- Backend: **ASP.NET Core Web API (.NET 10 LTS)** + **EF Core** + PostgreSQL (Docker Compose), JWT auth, **SignalR** for realtime
 - Frontend: Angular 21 (zoneless, SSR), Tailwind, CDK, NgRx SignalStore
-- Контракт между фронтом и бэком: **OpenAPI/Swagger → автогенерация типизированного TS-клиента** (NSwag или Kiota) ⚛️
-  *Это ключевое отличие от монорепо с Nest: общий TS-пакет не сделать, зато схема API становится единственным источником правды и типы фронта генерируются из C#-контроллеров.*
-- Локальная оркестрация: Docker Compose (или **.NET Aspire** — посмотреть как альтернативу)
+- The frontend/backend contract: **OpenAPI/Swagger → auto-generated typed TS client** (NSwag or Kiota) ⚛️
+  *This is the key difference from a Nest monorepo: you can't share a TS package, but the API schema becomes the single source of truth and frontend types are generated from the C# controllers.*
+- Local orchestration: Docker Compose (or **.NET Aspire** — worth evaluating as an alternative)
 
-**Проверь SDK:** сейчас у тебя `dotnet 8.0.130`. Для нового проекта поставь актуальный LTS (.NET 10) — `dotnet --list-sdks` покажет, что установлено.
+**Check your SDK:** you currently have `dotnet 8.0.130`. Install the current LTS (.NET 10) for a new project — `dotnet --list-sdks` shows what's installed.
 
-### Этапы
+### Stages
 
-Каждый этап закрывает пункты из **обоих** треков: слева Angular (Части 1–14 этого файла), справа C#/ASP.NET (части [DOTNET_ROADMAP.md](./DOTNET_ROADMAP.md)).
+Every stage closes items from **both** tracks: Angular on the left (Parts 1–14 of this file), C#/ASP.NET on the right (parts of [DOTNET_ROADMAP.md](./DOTNET_ROADMAP.md)).
 
-**Этап 1 — Каркас** *(Angular: 1, 5, 13.1 · C#: DOTNET Части 1–3)*
-- [ ] Структура репозитория: `src/Api` (ASP.NET), `src/Web` (Angular), `docker-compose.yml`
-- [ ] `dotnet new webapi` + solution-файл, первый эндпоинт `/health`
-- [ ] Docker Compose с PostgreSQL
-- [ ] EF Core: `DbContext`, первые сущности, первая миграция, `dotnet ef database update`
-- [ ] CORS-политика для дев-режима Angular
-- [ ] Swagger/OpenAPI включён, генерация TS-клиента для Angular (NSwag)
-- [ ] Структура Angular-приложения: `core/`, `shared/`, `features/`, `pages/` + path aliases
-- [ ] Layout: шапка, боковое меню, `<router-outlet>`, lazy-маршруты
+**Stage 1 — Skeleton** *(Angular: 1, 5, 13.1 · C#: DOTNET Parts 1–3)*
+- [ ] Repository layout: `src/Api` (ASP.NET), `src/Web` (Angular), `docker-compose.yml`
+- [ ] `dotnet new webapi` + a solution file, a first `/health` endpoint
+- [ ] Docker Compose with PostgreSQL
+- [ ] EF Core: `DbContext`, first entities, first migration, `dotnet ef database update`
+- [ ] A CORS policy for Angular's dev server
+- [ ] Swagger/OpenAPI enabled, TS client generation for Angular (NSwag)
+- [ ] Angular app structure: `core/`, `shared/`, `features/`, `pages/` + path aliases
+- [ ] Layout: header, side menu, `<router-outlet>`, lazy routes
 
-**Этап 2 — Авторизация** *(Angular: 6, 9, 5 · C#: DOTNET Часть 6)*
-- [ ] ASP.NET Identity + JWT bearer: регистрация/логин, refresh-токены
-- [ ] Authorization policies и `[Authorize]` на контроллерах
-- [ ] Хеширование паролей, валидация, rate limiting на логине
-- [ ] Angular: формы логина/регистрации с валидацией
-- [ ] `AuthStore` на сигналах, `authInterceptor` с подстановкой токена
-- [ ] Интерцептор рефреша токена при 401
-- [ ] `authGuard` (`canMatch`) на приватные маршруты
-- [ ] Безопасное хранение токенов (httpOnly cookie)
+**Stage 2 — Authentication** *(Angular: 6, 9, 5 · C#: DOTNET Part 6)*
+- [ ] ASP.NET Identity + JWT bearer: registration/login, refresh tokens
+- [ ] Authorization policies and `[Authorize]` on controllers
+- [ ] Password hashing, validation, rate limiting on login
+- [ ] Angular: login/registration forms with validation
+- [ ] A signal-based `AuthStore`, an `authInterceptor` attaching the token
+- [ ] A token-refresh interceptor on 401
+- [ ] An `authGuard` (`canMatch`) on private routes
+- [ ] Secure token storage (httpOnly cookie)
 
-**Этап 3 — CRUD проектов** *(Angular: 2, 4, 6, 7 · C#: DOTNET Части 4–5)*
-- [ ] Контроллеры/Minimal API для проектов, DTO и маппинг сущность↔DTO
-- [ ] Валидация запросов (DataAnnotations или FluentValidation)
-- [ ] `ProblemDetails` как единый формат ошибок API 🏗
-- [ ] EF Core: связи, `Include`, проекции в DTO, пагинация и сортировка
-- [ ] Angular: список проектов с фильтрами и поиском (фильтры в query params)
-- [ ] Создание/редактирование в модалке (свой `<app-modal>` с content projection)
-- [ ] `httpResource` для чтения + оптимистичные мутации
-- [ ] Загрузка обложки проекта с прогрессом (на бэке — `IFormFile` и хранение файлов)
-- [ ] Скелетоны, состояния загрузки/ошибки/пустоты
+**Stage 3 — Project CRUD** *(Angular: 2, 4, 6, 7 · C#: DOTNET Parts 4–5)*
+- [ ] Controllers/Minimal API for projects, DTOs and entity↔DTO mapping
+- [ ] Request validation (DataAnnotations or FluentValidation)
+- [ ] `ProblemDetails` as the single API error format 🏗
+- [ ] EF Core: relationships, `Include`, projections into DTOs, pagination and sorting
+- [ ] Angular: project list with filters and search (filters in query params)
+- [ ] Create/edit in a modal (your own `<app-modal>` with content projection)
+- [ ] `httpResource` for reads + optimistic mutations
+- [ ] Project cover upload with progress (backend: `IFormFile` and file storage)
+- [ ] Skeletons, loading/error/empty states
 
-**Этап 4 — Канбан задач** *(Angular: 8, 10 · C#: DOTNET Часть 4)*
-- [ ] API перемещения задач между колонками (порядок сортировки, конкурентные правки)
-- [ ] Доска с колонками, CDK drag-and-drop
-- [ ] Оптимистичное перемещение карточек + откат при ошибке
-- [ ] Инлайновое редактирование карточки
-- [ ] Фильтры по тегам/приоритету/дедлайну через `computed()`
-- [ ] Virtual scroll для больших колонок
-- [ ] Клавиатурная навигация и a11y для доски
+**Stage 4 — Task Kanban** *(Angular: 8, 10 · C#: DOTNET Part 4)*
+- [ ] An API for moving tasks between columns (sort order, concurrent edits)
+- [ ] A column board with CDK drag-and-drop
+- [ ] Optimistic card moves + rollback on failure
+- [ ] Inline card editing
+- [ ] Filters by tag/priority/due date via `computed()`
+- [ ] Virtual scroll for large columns
+- [ ] Keyboard navigation and a11y for the board
 
-**Этап 5 — Таймтрекинг** *(Angular: 3 · C#: DOTNET Части 4, 7)*
-- [ ] API таймера: старт/стоп, защита от двух активных таймеров (транзакции)
-- [ ] Работа с датами и таймзонами на бэке (`DateTimeOffset`, UTC везде) 🏗
-- [ ] Старт/стоп таймера по задаче, тикающий счётчик (RxJS `interval` → сигнал)
-- [ ] Восстановление активного таймера после перезагрузки страницы
-- [ ] Ручное добавление/правка записей времени (`FormArray`)
-- [ ] Защита от двойного запуска (`exhaustMap`)
+**Stage 5 — Time Tracking** *(Angular: 3 · C#: DOTNET Parts 4, 7)*
+- [ ] Timer API: start/stop, preventing two active timers (transactions)
+- [ ] Dates and time zones on the backend (`DateTimeOffset`, UTC everywhere) 🏗
+- [ ] Start/stop the timer on a task, a ticking counter (RxJS `interval` → signal)
+- [ ] Restoring the active timer after a page reload
+- [ ] Manually adding/editing time entries (`FormArray`)
+- [ ] Guarding against double starts (`exhaustMap`)
 
-**Этап 6 — Аналитика** *(Angular: 2, 8, 10 · C#: DOTNET Часть 5)*
-- [ ] Агрегации на бэке средствами LINQ/EF: время по дням/проектам, скорость закрытия задач
-- [ ] Кэширование тяжёлых агрегатов (`IMemoryCache` / `HybridCache`)
-- [ ] Графики (heatmap активности «как на GitHub», burndown)
-- [ ] Тяжёлые виджеты через `@defer (on viewport)`
-- [ ] Экспорт отчёта в CSV (стриминг ответа с бэка)
+**Stage 6 — Analytics** *(Angular: 2, 8, 10 · C#: DOTNET Part 5)*
+- [ ] Backend aggregations with LINQ/EF: time per day/project, task completion rate
+- [ ] Caching heavy aggregates (`IMemoryCache` / `HybridCache`)
+- [ ] Charts (a GitHub-style activity heatmap, burndown)
+- [ ] Heavy widgets behind `@defer (on viewport)`
+- [ ] CSV report export (streamed response from the backend)
 
-**Этап 7 — Realtime и заметки** *(Angular: 3, 8 · C#: DOTNET Часть 7)*
-- [ ] **SignalR**-хаб в ASP.NET, авторизация подключений
-- [ ] Angular-клиент SignalR (`@microsoft/signalr`) → мост в сигналы
-- [ ] Обновление доски у всех открытых вкладок в реальном времени
-- [ ] Заметки в markdown с безопасным рендером (санитизация!)
-- [ ] Уведомления/тосты
-- [ ] Фоновые задачи на бэке (`BackgroundService`: напоминания о дедлайнах)
+**Stage 7 — Realtime and Notes** *(Angular: 3, 8 · C#: DOTNET Part 7)*
+- [ ] A **SignalR** hub in ASP.NET, authorizing connections
+- [ ] The Angular SignalR client (`@microsoft/signalr`) → bridged into signals
+- [ ] Live board updates across all open tabs
+- [ ] Markdown notes with safe rendering (sanitization!)
+- [ ] Notifications/toasts
+- [ ] Background jobs on the backend (`BackgroundService`: due-date reminders)
 
-**Этап 8 — Прод-качество** *(Angular: 11, 12, 13, 14 · C#: DOTNET Части 8–9)*
-- [ ] Бэкенд: юнит-тесты (xUnit) + интеграционные (`WebApplicationFactory` + Testcontainers)
-- [ ] Фронт: юнит-тесты сторов и компонентов, E2E на Playwright (сквозь настоящий API)
-- [ ] Структурированное логирование (Serilog), health checks, метрики (OpenTelemetry)
-- [ ] SSR + prerender публичных страниц, метатеги для шаринга проекта
-- [ ] i18n (ru/en), тёмная тема
-- [ ] Глобальный `ErrorHandler` на фронте + `ProblemDetails` с бэка, Sentry
+**Stage 8 — Production Quality** *(Angular: 11, 12, 13, 14 · C#: DOTNET Parts 8–9)*
+- [ ] Backend: unit tests (xUnit) + integration tests (`WebApplicationFactory` + Testcontainers)
+- [ ] Frontend: unit tests for stores and components, E2E with Playwright (against the real API)
+- [ ] Structured logging (Serilog), health checks, metrics (OpenTelemetry)
+- [ ] SSR + prerendering public pages, meta tags for project sharing
+- [ ] i18n (ru/en), dark theme
+- [ ] A global `ErrorHandler` on the frontend + `ProblemDetails` from the backend, Sentry
 - [ ] CI: `dotnet build/test` + `ng lint/test/build`, budgets
-- [ ] Docker-образы фронта и бэка (multi-stage), деплой
-- [ ] PWA: офлайн-режим и установка
+- [ ] Docker images for frontend and backend (multi-stage), deployment
+- [ ] PWA: offline mode and installability
 
-### Запасные идеи пет-проекта
-- **Home Lab Dashboard** — мониторинг домашних сервисов: realtime-графики, WebSocket, много агрегаций
-- **Recipe Planner** — рецепты → план питания на неделю → автосписок покупок: сложные формы, drag&drop, оффлайн
-- **Reading Tracker** — библиотека книг, прогресс чтения, цитаты, статистика: работа с изображениями, поиск, теги
-
----
-
-## Часть 16. Параллельный трек: C# и ASP.NET Core 🎯
-
-> **Вынесен в отдельный файл: [DOTNET_ROADMAP.md](./DOTNET_ROADMAP.md)** — там полный план того же уровня детализации (язык C#, платформа .NET, ASP.NET Core, EF Core, архитектура, auth, SignalR, тесты, прод).
-
-**Как треки связаны:**
-
-- Хорошая новость: NestJS был вдохновлён Angular, а Angular — во многом .NET-подходами. DI, декораторы/атрибуты, пайплайн middleware, слоистая архитектура — концептуально ты это уже знаешь, меняется синтаксис.
-- Связующая задача двух треков — **перенести `to-do-list` с `json-server` на свой ASP.NET API**. Домен уже знаком, поэтому всё внимание уходит на C#, а не на выяснение «что вообще должно получиться».
-- Дальше — DevLog (Часть 15), где каждый этап закрывает пункты обоих треков.
-
-**Когда начинать:** не сразу. Порядок фаз и обоснование — в [README.md](./README.md#порядок-двух-треков) и в шапке [DOTNET_ROADMAP.md](./DOTNET_ROADMAP.md#когда-начинать-этот-трек-).
+### Backup Pet Project Ideas
+- **Home Lab Dashboard** — monitoring home services: realtime charts, WebSockets, lots of aggregation
+- **Recipe Planner** — recipes → weekly meal plan → auto-generated shopping list: complex forms, drag & drop, offline
+- **Reading Tracker** — book library, reading progress, quotes, statistics: image handling, search, tags
 
 ---
 
-## Приложение А. Шпаргалка React → Angular ⚛️
+## Appendix A. React → Angular Cheat Sheet ⚛️
 
 | React / Next.js | Angular 21 |
 |---|---|
 | `useState` | `signal()` + `.set()` / `.update()` |
-| `useMemo` | `computed()` (без массива зависимостей) |
-| `useEffect` | `effect()` (для сайд-эффектов) / `afterNextRender()` (для DOM) |
+| `useMemo` | `computed()` (no dependency array) |
+| `useEffect` | `effect()` (for side effects) / `afterNextRender()` (for DOM) |
 | props | `input()` / `input.required()` |
-| callback-props (`onChange`) | `output()` + `.emit()` |
+| callback props (`onChange`) | `output()` + `.emit()` |
 | `value` + `onChange` | `model()` + `[(value)]` |
-| `key` в `.map()` | `track` в `@for` (обязателен) |
+| `key` in `.map()` | `track` in `@for` (mandatory) |
 | `children` | `<ng-content>` |
-| render-props | `ng-template` + `ngTemplateOutlet` |
+| render props | `ng-template` + `ngTemplateOutlet` |
 | `ref` | `viewChild()` / `#templateVar` |
-| Context / Zustand | сервис с `@Injectable({providedIn:'root'})` + `inject()` |
+| Context / Zustand | a service with `@Injectable({providedIn:'root'})` + `inject()` |
 | React Query `useQuery` | `httpResource()` / `resource()` |
 | `next/dynamic` | `loadComponent` / `@defer` |
 | `<Link>` | `routerLink` |
-| файловый роутинг | явный `Routes`-конфиг |
-| middleware / axios interceptors | HTTP-интерцепторы (`withInterceptors`) |
-| `jest.mock` | подмена провайдера в `TestBed` |
-| custom hooks | сервисы + `hostDirectives` |
-| Zod-валидация формы | Reactive Forms + `Validators` (или Signal Forms) |
+| file-system routing | an explicit `Routes` config |
+| middleware / axios interceptors | HTTP interceptors (`withInterceptors`) |
+| `jest.mock` | swapping a provider in `TestBed` |
+| custom hooks | services + `hostDirectives` |
+| Zod form validation | Reactive Forms + `Validators` (or Signal Forms) |
 
-## Приложение Б. Работа с несколькими ИИ-ассистентами 🤖
+## Appendix B. Working with Multiple AI Assistants
 
-Да, этот план — обычный markdown-файл, его понимает любой ассистент. Но чтобы они реально были полезны, а не мешали учиться, есть нюансы.
+This plan is a plain markdown file — any assistant can read it. But making them genuinely useful, rather than a hindrance to learning, takes some care.
 
-### Режим двух ассистентов: Claude (основной) + Copilot (запасной) 🔑
+### Two-Assistant Mode: Claude (primary) + Copilot (backup) 🔑
 
-**Роли:**
+**Roles:**
 
-- **Claude — основной репетитор.** Объясняет теорию, даёт задания, проверяет код, ведёт по плану, решает архитектурные вопросы.
-- **Copilot — «сменщик»** на рабочем компьютере и когда у Claude кончились лимиты. Работает по тому же плану, но с более узким мандатом (см. ниже).
-- **Claude — ещё и ревьюер работы Copilot.** При возврате разбирает всё, что помечено `[c]`, и выносит вердикт.
+- **Claude — the primary tutor.** Explains theory, assigns tasks, reviews code, drives the plan, makes architectural calls.
+- **Copilot — the stand-in** on the work computer and when Claude's limits run out. Works from the same plan but with a narrower mandate (see below).
+- **Claude is also the reviewer of Copilot's work.** On return, it goes through everything marked `[c]` and issues a verdict.
 
-**Цикл:**
+**The cycle:**
 
 ```
-Claude: теория + задание
+Claude: theory + assignment
       ↓
- [переключение] лимиты / рабочий комп
+ [switch] limits / work computer
       ↓
-Copilot: прохождение пунктов → отметка [c] + запись в журнал передачи
+Copilot: works through items → marks [c] + writes a handoff log entry
       ↓
- [возврат к Claude]
+ [back to Claude]
       ↓
-Claude: ревью пунктов [c] → вердикт:
-        ✅ ок          → [x] 🔄
-        ⚠️ закрепить   → мини-задание на ту же тему
-        🔧 переделать  → разбор, почему архитектура другая
+Claude: reviews [c] items → verdict:
+        ✅ good        → [x] 🔄
+        ⚠️ reinforce   → a mini-assignment on the same topic
+        🔧 redo        → walk through why the architecture should differ
 ```
 
-### 🔑 Правило коммитов (действует всегда, с любым ассистентом)
+### 🔑 The Commit Rule (always applies, with any assistant)
 
-> Добавлено после реального факапа: первые 6 уроков делались без коммитов, и когда дошло до заливки на GitHub, разбить их на осмысленную историю уже не получилось — промежуточные состояния восстановить было неоткуда. Вся работа легла одним коммитом.
+> Added after a real screw-up: the first six lessons were done without commits, and by the time we pushed to GitHub, splitting them into a meaningful history was impossible — the intermediate states were gone. Everything landed as one commit.
 
-- [ ] 🔑 **Коммит сразу после каждого пройденного пункта или урока** — не «в конце дня», не «когда накопится»
-- [ ] Коммитить даже незаконченное, если переключаешься между машинами (`wip:` в сообщении)
-- [ ] Сообщение коммита ссылается на пункт плана: `feat(part2): computed для счётчиков задач`
-- [ ] Тег `[copilot]` в конце сообщения, если пункт делался с Copilot
-- [ ] Пушить перед каждым переключением машины/ассистента 🏗
-- [ ] 🏗 Ценность не в «правильной истории» ради красоты: **диффы по пунктам — это то, по чему Claude делает ревью**. Один большой коммит ревьюить нечем.
+- [ ] 🔑 **Commit right after every completed item or lesson** — not "at the end of the day", not "once it piles up"
+- [ ] Commit even unfinished work when switching machines (`wip:` in the message)
+- [ ] The commit message references the plan item: `feat(part2): computed counters for tasks`
+- [ ] A `[copilot]` tag at the end of the message if the item was done with Copilot
+- [ ] Push before every machine/assistant switch 🏗
+- [ ] 🏗 The point isn't a pretty history: **per-item diffs are what Claude reviews**. There's nothing to review in one giant commit.
 
-**Правила для тебя при работе с Copilot:**
+**Your rules when working with Copilot:**
 
-- [ ] Отмечать пройденное как `- [c]`, **не** `- [x]` — иначе оно не попадёт в очередь на ревью
-- [ ] 🔑 Коммит на каждый пункт с тегом `[copilot]` — именно по этим коммитам Claude потом восстанавливает картину
-- [ ] Записывать в «Журнал передачи» (в конце файла): что делал, что было непонятно, где сомневался
-- [ ] Не молчать о сомнениях: строчка «не понял, зачем тут `untracked()`» экономит целый раунд ревью
-- [ ] 🏗 Не менять архитектуру самостоятельно — см. границы мандата ниже
+- [ ] Mark completed items `- [c]`, **not** `- [x]` — otherwise they never enter the review queue
+- [ ] 🔑 One commit per item tagged `[copilot]` — those commits are how Claude reconstructs what happened
+- [ ] Write in the "Handoff Log" (at the end of this file): what you did, what was unclear, where you had doubts
+- [ ] Don't stay quiet about doubts: a line like "didn't get why `untracked()` is needed here" saves a whole review round
+- [ ] 🏗 Don't change architecture on your own — see the mandate boundaries below
 
-**Что Copilot делать хорошо, а что лучше отложить до Claude** 🏗
+**What Copilot is good for, and what should wait for Claude** 🏗
 
-Главный риск режима — **архитектурный дрейф**: за одну автономную сессию можно уехать в подход, который потом придётся переделывать целым куском. Поэтому мандат разный:
+The main risk in this mode is **architectural drift**: one autonomous session can head off into an approach that later has to be redone wholesale. Hence the different mandates:
 
-| Тип задачи | С Copilot |
+| Type of work | With Copilot |
 |---|---|
-| Практика уже разобранной темы | ✅ да, идеально |
-| Повторяющаяся рутина (ещё один похожий компонент, тесты по образцу) | ✅ да |
-| Пункты-«прочитать/попробовать API» | ✅ да |
-| Рефакторинг по уже согласованному правилу | ✅ да |
-| **Новая тема из плана «с нуля»** | ⚠️ можно, но помечать `[c]` и быть готовым переделать |
-| **Архитектурные решения** (структура папок, выбор SignalStore vs сервис, слои на бэке) | 🛑 лучше дождаться Claude |
-| **Стартовые этапы DevLog** (каркас, авторизация) | 🛑 дождаться — цена ошибки высокая |
+| Practicing an already-explained topic | ✅ yes, ideal |
+| Repetitive routine (another similar component, tests from a template) | ✅ yes |
+| "Read/try out this API" items | ✅ yes |
+| Refactoring under an already-agreed rule | ✅ yes |
+| **A brand-new topic from the plan** | ⚠️ possible, but mark `[c]` and be ready to redo it |
+| **Architectural decisions** (folder structure, SignalStore vs service, backend layers) | 🛑 better to wait for Claude |
+| **Early DevLog stages** (skeleton, auth) | 🛑 wait — the cost of a mistake is high |
 
-**Что Claude проверяет при ревью** (чтобы ты понимал критерии заранее):
+**What Claude checks during review** (so you know the criteria up front):
 
-- [ ] Актуальность API: нет `NgModule`, `*ngIf`, `@Input()`-декораторов, `constructor`-инъекции, лишних `BehaviorSubject`
-- [ ] Совместимость с zoneless: состояние в сигналах, нет мутаций «мимо» реактивности
-- [ ] Логика в сервисах, а не в компонентах и не в шаблонах
-- [ ] Иммутабельность обновлений, `readonly`, приватные writable-сигналы наружу как `computed`/`asReadonly`
-- [ ] Отписки там, где есть ручные подписки
-- [ ] Границы модулей: фича не лезет в другую фичу
-- [ ] Типизация: нет `any`, нет `!` там, где можно `nonNullable`
-- [ ] Соответствие уже принятым в проекте решениям (единообразие важнее «умнее»)
-- [ ] 🔑 **Понимание, а не только работающий код** — Claude может задать 1–2 вопроса «почему именно так», и это часть ревью
+- [ ] Current APIs: no `NgModule`, `*ngIf`, `@Input()` decorators, constructor injection, needless `BehaviorSubject`
+- [ ] Zoneless compatibility: state in signals, no mutations bypassing reactivity
+- [ ] Logic in services, not in components or templates
+- [ ] Immutable updates, `readonly`, private writable signals exposed as `computed`/`asReadonly`
+- [ ] Unsubscribing wherever there are manual subscriptions
+- [ ] Module boundaries: features don't reach into other features
+- [ ] Typing: no `any`, no `!` where `nonNullable` would do
+- [ ] Consistency with decisions already made in the project (uniformity beats cleverness)
+- [ ] 🔑 **Understanding, not just working code** — Claude may ask one or two "why this way?" questions, and that's part of the review
 
-**Инфраструктура, без которой режим не работает:**
+**Infrastructure the mode depends on:**
 
-- [ ] 🔑 Git-репозиторий с осмысленными коммитами (сейчас в `to-do-list` один `initial commit` — исправить)
-- [ ] Роадмап **внутри** репозитория, чтобы галочки версионировались вместе с кодом
-- [ ] Пуш на удалённый репозиторий — иначе рабочий и домашний компьютеры не синхронизируются
-- [ ] `.github/copilot-instructions.md` с теми же правилами стека, что и у Claude
-- [ ] Тег `[copilot]` в сообщении коммита — быстрый фильтр `git log --grep=copilot`
+- [x] 🔑 A git repository with meaningful commits
+- [x] The roadmap **inside** the repository, so checkboxes are versioned alongside the code
+- [x] Pushed to a remote — otherwise the work and home computers don't sync
+- [ ] `.github/copilot-instructions.md` with the same stack rules Claude follows
+- [ ] The `[copilot]` tag in commit messages — a quick filter with `git log --grep=copilot`
 
-### Как подключить план к разным инструментам
+### Wiring the Plan into Different Tools
 
-- [ ] `CLAUDE.md` в корне репозитория — Claude Code читает автоматически
-- [ ] `.github/copilot-instructions.md` — GitHub Copilot читает автоматически
-- [ ] `AGENTS.md` — растущий кросс-инструментальный стандарт (Cursor, Codex и др.)
-- [ ] 🏗 Не дублировать содержимое: держать **один** источник правды (`ANGULAR_ROADMAP.md`), а в файлах инструкций — короткие ссылки на него и правила поведения
-- [ ] Хранить эти файлы в git — тогда правила переезжают вместе с проектом
+- [ ] `CLAUDE.md` in the repo root — Claude Code reads it automatically
+- [ ] `.github/copilot-instructions.md` — GitHub Copilot reads it automatically
+- [ ] `AGENTS.md` — the emerging cross-tool standard (Cursor, Codex, etc.)
+- [ ] 🏗 Don't duplicate content: keep **one** source of truth (the roadmaps) and put short links plus behavioral rules in the instruction files
+- [ ] Keep those files in git — the rules then travel with the project
 
-### Что писать в файл инструкций (пример смысловых пунктов)
+### What to Put in the Instruction File (the gist)
 
-- [ ] Версии стека: Angular 21, **zoneless**, standalone, `@angular/build`, Vitest, SSR; .NET 10, EF Core, PostgreSQL
-- [ ] 🔑 Запрет на устаревшие API: никаких `NgModule`, `*ngIf`/`*ngFor`, `@Input()`/`@Output()`-декораторов, `ChangeDetectorRef`-хаков, `constructor`-инъекции вместо `inject()`
-- [ ] Требование: control flow `@if`/`@for`, сигналы, `inject()`, `input()`/`output()`
-- [ ] Ссылка на `angular.dev/ai/develop-with-ai` и `llms.txt` Angular — официальный контекст для моделей 🔑
-- [ ] Ссылка на текущий этап роадмапа, чтобы ассистент не забегал вперёд
+- [ ] Stack versions: Angular 21, **zoneless**, standalone, `@angular/build`, Vitest, SSR; .NET 10, EF Core, PostgreSQL
+- [ ] 🔑 Banned legacy APIs: no `NgModule`, `*ngIf`/`*ngFor`, `@Input()`/`@Output()` decorators, `ChangeDetectorRef` hacks, constructor injection instead of `inject()`
+- [ ] Required: `@if`/`@for` control flow, signals, `inject()`, `input()`/`output()`
+- [ ] A link to `angular.dev/ai/develop-with-ai` and Angular's `llms.txt` — the official context for models 🔑
+- [ ] A pointer to the current roadmap stage, so the assistant doesn't run ahead
 
-### Главный риск: модель знает Angular «из 2021 года» ⚠️
+### The Main Risk: Models Know "Angular from 2021" ⚠️
 
-Angular 21 и zoneless-режим очень новые. Модели (все, включая меня) склонны предлагать старые паттерны, потому что их в обучающих данных на порядки больше.
+Angular 21 and zoneless mode are very new. Models (all of them, including me) tend to suggest older patterns, simply because there is orders of magnitude more of that in the training data.
 
-- [ ] 🔑 Всегда сверяй сгенерированный код с [angular.dev](https://angular.dev) — не с ответом модели
-- [ ] Красные флаги в ответе ассистента: `NgModule`, `declarations:`, `*ngIf`, `@Input()`, `BehaviorSubject` как основное состояние, `zone.js`
-- [ ] Проси модель указывать версию Angular, для которой она пишет код
-- [ ] Если модель спорит с документацией — права документация
+- [ ] 🔑 Always check generated code against [angular.dev](https://angular.dev) — not against the model's answer
+- [ ] Red flags in an assistant's answer: `NgModule`, `declarations:`, `*ngIf`, `@Input()`, `BehaviorSubject` as primary state, `zone.js`
+- [ ] Ask the model to state which Angular version it's writing for
+- [ ] If the model argues with the docs — the docs win
 
-### Как использовать ИИ, не мешая учёбе 🏗
+### Using AI Without Undermining the Learning 🏗
 
-Ты явно хочешь **уметь повторить сам**. Это накладывает ограничения на то, как просить помощь:
+You explicitly want to **be able to do it yourself afterwards**. That constrains how to ask for help:
 
-- [ ] ✅ Хорошо: «объясни, чем `computed` отличается от `effect`», «сделай ревью моего кода», «почему у меня ошибка NG0500»
-- [ ] ✅ Хорошо: «дай задание на эту тему», «проверь, правильно ли я понял, что…»
-- [ ] ❌ Плохо на этапе обучения: «напиши мне весь компонент» — код появится, понимание нет
-- [ ] 🔑 Правило: сначала пишешь сам → потом просишь ревью → потом спрашиваешь «как бы сделал ты и почему»
-- [ ] Раздели роли: **Claude** — репетитор/объяснения/ревью; **Copilot** — автодополнение рутины (когда тема уже понята) 🏗
-- [ ] Отключай агрессивный автокомплит, когда изучаешь новую тему — иначе он допишет за тебя раньше, чем ты подумаешь
-- [ ] Прогресс отмечай в этом файле **только после того, как написал код руками**
+- [ ] ✅ Good: "explain how `computed` differs from `effect`", "review my code", "why am I getting NG0500"
+- [ ] ✅ Good: "give me an exercise on this topic", "check whether I understood that…"
+- [ ] ❌ Bad while learning: "write the whole component for me" — you get code, not understanding
+- [ ] 🔑 The rule: write it yourself first → then ask for a review → then ask "how would you do it and why"
+- [ ] Split the roles: **Claude** — tutor/explanations/review; **Copilot** — autocomplete for routine work (once the topic is understood) 🏗
+- [ ] Turn off aggressive autocomplete while learning a new topic — otherwise it finishes your thought before you have it
+- [ ] Tick progress in this file **only after writing the code by hand**
 
-## Приложение В. Ресурсы
+## Appendix C. Resources
 
-- [angular.dev](https://angular.dev) — официальная документация (актуальная, с интерактивными туториалами)
-- [angular.dev/style-guide](https://angular.dev/style-guide) — официальный style guide (обновлён в 2025)
+- [angular.dev](https://angular.dev) — official docs (current, with interactive tutorials)
+- [angular.dev/style-guide](https://angular.dev/style-guide) — the official style guide (rewritten in 2025)
 - [angular.dev/tutorials](https://angular.dev/tutorials) — Learn Angular + Deferrable Views
-- [Angular Blog](https://blog.angular.dev) — что нового в релизах
+- [Angular Blog](https://blog.angular.dev) — what's new in each release
 - [NgRx SignalStore docs](https://ngrx.io/guide/signals)
-- [Angular DevTools](https://angular.dev/tools/devtools) — расширение для профайлинга
-- [update.angular.dev](https://update.angular.dev) — гайд по обновлению версий
-- [`angular.dev/ai/develop-with-ai`](https://angular.dev/ai/develop-with-ai) — актуальные правила для AI-ассистентов (полезно и человеку)
+- [Angular DevTools](https://angular.dev/tools/devtools) — the profiling extension
+- [update.angular.dev](https://update.angular.dev) — the version upgrade guide
+- [`angular.dev/ai/develop-with-ai`](https://angular.dev/ai/develop-with-ai) — current rules for AI assistants (useful for humans too)
 
-### C# / .NET
-- [learn.microsoft.com/dotnet](https://learn.microsoft.com/dotnet) — официальная документация и бесплатные курсы
-- [learn.microsoft.com/aspnet/core](https://learn.microsoft.com/aspnet/core) — ASP.NET Core
-- [learn.microsoft.com/ef/core](https://learn.microsoft.com/ef/core) — EF Core
-- [C# language reference](https://learn.microsoft.com/dotnet/csharp/) — справочник по языку
-- [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/) — оркестрация дев-окружения
-- [Testcontainers for .NET](https://dotnet.testcontainers.org/)
-- «C# in Depth» (Jon Skeet) / «Pro ASP.NET Core» (Adam Freeman) — книги, если зайдёт формат
+C# / .NET resources live in [DOTNET_ROADMAP.md](./DOTNET_ROADMAP.md#appendix-b-resources).
 
 ---
 
-## Дневник прогресса
+## Progress Log
 
-| Дата | Что пройдено | С кем | Заметки |
+| Date | What was covered | With | Notes |
 |---|---|---|---|
-| 2026-08-16 | Часть 0 полностью | Claude | Сигналы, компоненты, формы, роутинг, DI, HTTP |
+| 2026-08-16 | Part 0 complete | Claude | Signals, components, forms, routing, DI, HTTP |
 | | | | |
 
 ---
 
-## Журнал передачи (Copilot → Claude) 🔄
+## Handoff Log (Copilot → Claude) 🔄
 
-> Заполняется при работе с Copilot. Claude читает этот раздел первым делом при возврате.
-> Строка живёт до ревью, после — переносится в «Дневник прогресса» с вердиктом.
+> Filled in when working with Copilot. Claude reads this section first thing on return.
+> An entry stays here until reviewed, then moves to the Progress Log with a verdict.
 
-**Шаблон записи:**
+**Entry template:**
 
 ```
-### <дата> · Пункты <номера> · Copilot
-- Что сделано: ...
-- Коммиты: <хеши или ветка>
-- Было непонятно: ...
-- Сомнения / где мог ошибиться: ...
-- Вопросы к Claude: ...
-- Статус ревью: ⏳ ждёт
+### <date> · Items <numbers> · Copilot
+- What I did: ...
+- Commits: <hashes or branch>
+- What was unclear: ...
+- Doubts / where I might have got it wrong: ...
+- Questions for Claude: ...
+- Review status: ⏳ pending
 ```
 
-<!-- ↓ новые записи добавляй сюда ↓ -->
+<!-- ↓ add new entries here ↓ -->
 
-*(пока пусто)*
+*(empty for now)*
 
 ---
 
-## Вердикты ревью
+## Review Verdicts
 
-| Дата ревью | Пункты | Вердикт | Что доработано |
+| Review date | Items | Verdict | What was reworked |
 |---|---|---|---|
 | | | | |

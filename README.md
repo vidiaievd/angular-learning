@@ -1,92 +1,96 @@
-# Angular + ASP.NET Core — учебный репозиторий
+# Angular + ASP.NET Core — Learning Repository
 
-Пошаговое изучение **Angular 21** (основной трек) и **C# / ASP.NET Core** (параллельный трек).
-Опыт на входе: React / Next.js / NestJS / TypeScript.
+Step-by-step study of **Angular 21** (main track) and **C# / ASP.NET Core** (parallel track).
+Background coming in: React / Next.js / NestJS / TypeScript.
 
-## Структура
+## Structure
 
-| Файл / папка | Что это |
+| File / folder | What it is |
 |---|---|
-| [ANGULAR_ROADMAP.md](./ANGULAR_ROADMAP.md) | План по Angular: Части 0–15, приложения, журнал работы с ассистентами |
-| [DOTNET_ROADMAP.md](./DOTNET_ROADMAP.md) | План по C# / ASP.NET Core: Части 0–10 |
-| `to-do-list/` | Учебный проект-песочница на Angular |
-| `devlog/` *(позже)* | Финальный пет-проект: Angular + ASP.NET Core |
+| [ANGULAR_ROADMAP.md](./ANGULAR_ROADMAP.md) | The Angular plan: Parts 0–15, appendices, AI-assistant workflow |
+| [DOTNET_ROADMAP.md](./DOTNET_ROADMAP.md) | The C# / ASP.NET Core plan: Parts 0–10 |
+| `to-do-list/` | The Angular sandbox project |
+| `devlog/` *(later)* | The final pet project: Angular + ASP.NET Core |
 
-## Текущий статус
+## Current Status
 
-- ✅ **Angular Часть 0** — сигналы, компоненты (`input`/`output`), Reactive Forms, роутинг, DI, `HttpClient` + `httpResource`
-- 🔜 **Angular Часть 1** — `@if`/`@switch`/`@empty`, `model()`, жизненный цикл
-- ⏸️ **C# трек** — не начат (по плану стартует после Angular Части 7)
+- ✅ **Angular Part 0** — signals, components (`input`/`output`), Reactive Forms, routing, DI, `HttpClient` + `httpResource`
+- 🔜 **Angular Part 1** — `@if`/`@switch`/`@empty`, `model()`, lifecycle
+- ⏸️ **C# track** — not started (scheduled to begin after Angular Part 7)
 
-Запуск песочницы:
+Running the sandbox:
 
 ```bash
 cd to-do-list
 npm install
-npm run api     # json-server на :3000 (в отдельном терминале)
-npm start       # ng serve на :4200
+npm run api     # json-server on :3000 (in a separate terminal)
+npm start       # ng serve on :4200
 ```
 
 ---
 
-## Порядок двух треков
+## Track Order
 
-**Вопрос:** учить Angular и C# параллельно или сначала закрыть Angular?
+**The question:** learn Angular and C# in parallel, or finish Angular first?
 
-**Ответ: ступенчато — ни то, ни другое в чистом виде.**
+**The answer: staggered — neither one in its pure form.**
 
-### Почему не полностью параллельно
+### Why not fully parallel
 
-Два незнакомых языка одновременно дают не ускорение, а **интерференцию**:
+Two unfamiliar languages at once produce **interference**, not acceleration:
 
-- `async/await` в C# выглядит идентично TypeScript, но работает иначе (пул потоков vs event loop). Учить обе модели в один день — верный способ перепутать их надолго.
-- Ленивость в LINQ и ленивость в сигналах — разные вещи с похожей интуицией.
-- DI есть и там, и там, но со своими правилами времён жизни.
-- Плюс банальное: при переключении контекста каждый раз теряется разгон.
+- `async/await` in C# looks identical to TypeScript but works differently (thread pool vs event loop). Learning both models on the same day is a reliable way to confuse them for a long time.
+- Laziness in LINQ and laziness in signals are different things with deceptively similar intuition.
+- Both have DI, each with its own lifetime rules.
+- Plus the obvious: every context switch costs momentum.
 
-### Почему не строго последовательно
+### Why not strictly sequential
 
-- «Сначала весь Angular» — это месяцы. C# нужен для работы, столько ждать нет смысла.
-- Части 10–14 Angular (перф, тесты, SSR, экосистема) осмысленно проходить **на реальном проекте**, а реальный проект хочется с настоящим бэкендом.
+- "All of Angular first" means months. C# is needed for work; waiting that long makes no sense.
+- Angular Parts 10–14 (performance, testing, SSR, ecosystem) only make sense **on a real project**, and a real project wants a real backend.
 
-### Ступенчатая схема ✅
+### The staggered plan ✅
 
 ```
-Фаза A ──────────────► Фаза B ──────────► Фаза C
-Angular 1–7            мост: свой API      DevLog
-только фронт           C# 0–4              оба трека
-                       (домен уже знаком)  по вертикалям
+Phase A ──────────────► Phase B ──────────► Phase C
+Angular 1–7            bridge: own API      DevLog
+frontend only          C# 0–4               both tracks
+                       (domain already known)  by vertical slice
 ```
 
-**Фаза A — только Angular, Части 1–7.**
-Цель: фронтенд перестаёт быть узким местом. Закрываются шаблоны, сигналы, RxJS, формы, роутинг, HTTP, state management.
-*Сигнал к переходу:* добавление новой сущности в `to-do-list` (например, «проекты») не вызывает вопроса «а как это вообще делается».
+**Phase A — Angular only, Parts 1–7.**
+Goal: the frontend stops being the bottleneck. Covers templates, signals, RxJS, forms, routing, HTTP, state management.
+*Signal to move on:* adding a new entity to `to-do-list` (say, "projects") no longer raises the question "how is this even done?".
 
-**Фаза B — мост. C# Части 0–4 на задаче «перенести `to-do-list` с json-server на свой ASP.NET API».**
-Это ключевой момент всей схемы: **домен уже знаком**, известно, что должно получиться, фронт менять почти не надо. Всё внимание уходит на язык и фреймворк, а не на выяснение требований. Первая C#-задача с уже понятным результатом — самая быстрая точка входа, которая вообще возможна.
+**Phase B — the bridge. C# Parts 0–4 on the task "move `to-do-list` off json-server onto your own ASP.NET API".**
+This is the crux of the whole plan: **the domain is already familiar**, you know what the result should be, and the frontend barely changes. All attention goes to the language and framework rather than to figuring out requirements. A first C# task with an already-understood outcome is the fastest possible entry point.
 
-**Фаза C — DevLog, чередование по вертикалям.**
-Каждая фича проходится насквозь: сначала бэкенд (эндпоинт + EF Core), потом фронтенд (стор + UI). Так оба стека растут вместе, и на каждом шаге есть работающий результат целиком.
+**Phase C — DevLog, alternating by vertical slice.**
+Every feature goes end to end: backend first (endpoint + EF Core), then frontend (store + UI). Both stacks grow together, and there's a working result at every step.
 
-### Исключение
+### Exception
 
-Если на работе появился **дедлайн по C#** — схема переворачивается: Часть 1 `DOTNET_ROADMAP.md` начинается немедленно, а Angular уходит в режим поддержания (только практика уже пройденного, без новых тем).
+If a **C# deadline** appears at work, the plan flips: Part 1 of `DOTNET_ROADMAP.md` starts immediately, and Angular goes into maintenance mode (practice only, no new topics).
 
-### Что помогает переносу знаний
+### What makes the knowledge transfer
 
-NestJS был вдохновлён Angular, а Angular — во многом .NET-подходами. DI-контейнер, декораторы/атрибуты, пайплайн middleware, слоистая архитектура — концептуально это одно и то же. Меняется синтаксис, а не мышление. В `DOTNET_ROADMAP.md` такие места помечены 🅰️, а в конце есть таблица соответствий TS/Nest/Angular → C#/ASP.NET.
+NestJS was inspired by Angular, and Angular by .NET approaches in many ways. The DI container, decorators/attributes, the middleware pipeline, layered architecture — conceptually these are the same thing. The syntax changes, not the thinking. Such places are marked 🅰️ in `DOTNET_ROADMAP.md`, and there's a mapping table at the end: TS/Nest/Angular → C#/ASP.NET.
 
 ---
 
-## Режим работы с ИИ-ассистентами
+## Working with AI Assistants
 
-**Claude** — основной репетитор: теория, задания, ревью, архитектурные решения.
-**Copilot** — сменщик на рабочем компьютере и когда кончились лимиты.
+**Claude** — the primary tutor: theory, assignments, review, architectural decisions.
+**Copilot** — the stand-in on the work computer and when limits run out.
 
-Пункты, пройденные с Copilot, отмечаются `- [c]` и попадают в очередь на ревью. При возврате Claude разбирает их и выносит вердикт: ок / закрепить / переделать.
+Items completed with Copilot are marked `- [c]` and enter the review queue. On return, Claude goes through them and issues a verdict: good / reinforce / redo.
 
-Подробно — [ANGULAR_ROADMAP.md → Приложение Б](./ANGULAR_ROADMAP.md#приложение-б-работа-с-несколькими-ии-ассистентами-).
+Details in [ANGULAR_ROADMAP.md → Appendix B](./ANGULAR_ROADMAP.md#appendix-b-working-with-multiple-ai-assistants).
 
-### Правило коммитов 🔑
+### The commit rule 🔑
 
-**Коммит сразу после каждого пройденного пункта.** Диффы по пунктам — это то, по чему делается ревью; один большой коммит ревьюить нечем. Тег `[copilot]` в сообщении, если пункт делался с Copilot.
+**Commit right after every completed item.** Per-item diffs are what the review is based on; there's nothing to review in one giant commit. Tag the message `[copilot]` if the item was done with Copilot.
+
+### Language
+
+Working language of the plans and the repository is **English** (the work machine has no Russian keyboard layout). Conversations with assistants also run in English by default; ask for a Russian explanation whenever something isn't clear.

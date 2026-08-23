@@ -649,13 +649,13 @@ The main risk in this mode is **architectural drift**: one autonomous session ca
 - [x] 🔑 A git repository with meaningful commits
 - [x] The roadmap **inside** the repository, so checkboxes are versioned alongside the code
 - [x] Pushed to a remote — otherwise the work and home computers don't sync
-- [ ] `.github/copilot-instructions.md` with the same stack rules Claude follows
+- [x] `.github/copilot-instructions.md` with the same stack rules Claude follows
 - [ ] The `[copilot]` tag in commit messages — a quick filter with `git log --grep=copilot`
 
 ### Wiring the Plan into Different Tools
 
-- [ ] `CLAUDE.md` in the repo root — Claude Code reads it automatically
-- [ ] `.github/copilot-instructions.md` — GitHub Copilot reads it automatically
+- [x] `CLAUDE.md` in the repo root — Claude Code reads it automatically
+- [x] `.github/copilot-instructions.md` — GitHub Copilot reads it automatically
 - [ ] `AGENTS.md` — the emerging cross-tool standard (Cursor, Codex, etc.)
 - [ ] 🏗 Don't duplicate content: keep **one** source of truth (the roadmaps) and put short links plus behavioral rules in the instruction files
 - [ ] Keep those files in git — the rules then travel with the project

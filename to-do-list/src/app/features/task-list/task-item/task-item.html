@@ -1,0 +1,7 @@
+<li>
+  <label>
+    <input type="checkbox" [checked]="task().done" (change)="toggle.emit(task().id)" />
+    {{ task().title }}
+  </label>
+  <button (click)="remove.emit(task().id)">Удалить</button>
+</li>

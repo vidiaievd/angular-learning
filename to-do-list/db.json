@@ -1,0 +1,20 @@
+{
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Изучить сигналы",
+      "done": true
+    },
+    {
+      "id": "2",
+      "title": "Изучить @for в шаблоне",
+      "done": false
+    },
+    {
+      "id": "3",
+      "title": "Собрать список задач",
+      "done": true
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

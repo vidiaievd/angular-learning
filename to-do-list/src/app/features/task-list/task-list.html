@@ -1,0 +1,10 @@
+<app-add-task-form (submitted)="store.addTask($event)" />
+<ul>
+  @for (task of store.tasksResource.value(); track task.id) {
+    <app-task-item
+      [task]="task"
+      (toggle)="store.toggleTask($event, task.done)"
+      (remove)="store.removeTask($event)"
+    />
+  }
+</ul>

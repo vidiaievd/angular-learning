@@ -65,11 +65,11 @@ Everything adjacent to what we covered but skipped.
 
 ### 1.1 Templates
 
-- [ ] `@if` / `@else if` / `@else` — conditional rendering
-- [ ] `@switch` / `@case` / `@default`
-- [ ] `@empty` inside `@for` — the empty-list state
-- [ ] `@for` variables: `$index`, `$first`, `$last`, `$even`, `$odd`, `$count`
-- [ ] `@let` — a local template variable (so you don't call `store.foo().bar` five times)
+- [x] `@if` / `@else if` / `@else` — conditional rendering
+- [x] `@switch` / `@case` / `@default`
+- [x] `@empty` inside `@for` — the empty-list state
+- [x] `@for` variables: `$index`, `$first`, `$last`, `$even`, `$odd`, `$count`
+- [x] `@let` — a local template variable (so you don't call `store.foo().bar` five times)
 - [ ] Template reference variables: `<input #nameInput>` and reading `nameInput.value` ⚛️ *(a rough analogue of `ref`, but works right in the template)*
 - [ ] Attribute binding forms: `[class.active]="isActive()"`, `[style.width.px]="w()"`, `[attr.aria-label]="..."`
 - [ ] `[attr.disabled]` vs `[disabled]` (HTML attribute vs DOM property) ⚛️
@@ -97,7 +97,7 @@ Everything adjacent to what we covered but skipped.
 
 ### Part 1 Practice
 - [ ] Add an "All / Active / Completed" filter to `to-do-list` using `@if`/`@switch`
-- [ ] Show an `@empty` state ("No tasks yet")
+- [x] Show an `@empty` state ("No tasks yet")
 - [ ] Move the counts out of `about.html` into a `computed()` inside `TaskStore`
 
 ---
@@ -709,6 +709,7 @@ C# / .NET resources live in [DOTNET_ROADMAP.md](./DOTNET_ROADMAP.md#appendix-b-r
 | Date | What was covered | With | Notes |
 |---|---|---|---|
 | 2026-08-16 | Part 0 complete | Claude | Signals, components, forms, routing, DI, HTTP |
+| 2026-08-23 | 1.1 Templates — `@if`/`@switch`/`@empty`/`@let`/`@for` variables | Claude | Caught a real bug: checking `value()` truthiness for loading state fails silently (empty array is truthy). Also caught matching on raw `status()` instead of `isLoading()` — misses the `'reloading'` state after `.reload()` |
 | | | | |
 
 ---

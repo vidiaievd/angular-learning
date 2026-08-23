@@ -1,13 +1,23 @@
 <app-add-task-form (submitted)="store.addTask($event)" />
 
 @if (store.tasksResource.isLoading()) {
-  <p>Loading tasks...</p>
+  <p>Loading...</p>
 } @else if (store.tasksResource.error()) {
-  <p>Failed to load tasks. Is the API running?</p>
+  <p>Something broke</p>
 } @else {
+  @let allTasks = store.tasksResource.value();
+
+  <p>{{ allTasks.length }} tasks total</p>
+  <p>{{ allTasks.length > 0 ? 'has tasks' : 'empty' }}</p>
+
   <ul>
-    @for (task of store.tasksResource.value(); track task.id) {
-      <app-task-item [task]="task" (toggle)="store.toggleTask($event, task.done)" (remove)="store.removeTask($event)" />
+    @for (task of allTasks; track task.id; let i = $index, isLast = $last) {
+      <app-task-item
+        [task]="task"
+        [index]="i + 1"
+        (toggle)="store.toggleTask($event, task.done)"
+        (remove)="store.removeTask($event)"
+      />
     } @empty {
       <p>There are no tasks yet. Add a task to get started!</p>
     }

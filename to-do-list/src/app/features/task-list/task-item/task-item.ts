@@ -11,4 +11,5 @@ export class TaskItem {
   task = input.required<Task>();
   toggle = output<number>();
   remove = output<number>();
+  index = input.required<number>();
 }
